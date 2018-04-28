@@ -24,8 +24,8 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         lastTime;
 
-    canvas.width = 909;
-    canvas.height = 855;
+    canvas.width = 505;
+    canvas.height = 606;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -79,6 +79,8 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
+
+
         // checkCollisions();
     }
 
@@ -107,23 +109,24 @@ var Engine = (function(global) {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        if (winGame === false) {
         var rowImages = [
                 'images/water-block.png',   // Top row is water
                 'images/stone-block.png',   // Row 1 of 3 of stone
                 'images/stone-block.png',   // Row 2 of 3 of stone
                 'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/water-block.png',
-                'images/stone-block.png',
-                'images/stone-block.png',
+                // 'images/water-block.png',
+                // 'images/stone-block.png',
+                // 'images/stone-block.png',
                 'images/grass-block.png',   // Row 1 of 2 of grass
                 'images/grass-block.png'    // Row 2 of 2 of grass
             ],
-            numRows = 9,
-            numCols = 9,
+            numRows = 6,
+            numCols = 5,
             row, col;
 
         // Before drawing, clear existing canvas
-        ctx.clearRect(0,0,canvas.width,canvas.height)
 
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
@@ -143,6 +146,17 @@ var Engine = (function(global) {
         }
 
         renderEntities();
+      } else {
+          ctx.fillStyle = 'black';
+          ctx.fillRect(10, 10, 505, 606);
+          ctx.fillStyle = 'white';
+          ctx.font = '30px monospace';
+          ctx.fillText('You won! Congratulations', 252, 200);
+          ctx.font = '25px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('Try again?', 252, 240);
+          ctx.fillText('Press ENTER', 252, 280);
+        }
     }
 
     /* This function is called by the render function and is called on each game
@@ -153,6 +167,8 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
+         // stoneBridge1.render();
+         // stoneBridge2.render();
         reachZone.render();
         allEnemies.forEach(function(enemy) {
             enemy.render();

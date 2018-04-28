@@ -1,4 +1,5 @@
 // Enemies our player must avoi
+let winGame = false;
 var Enemy = function(y, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -9,13 +10,13 @@ var Enemy = function(y, speed) {
     this.y = y;
     this.speed = speed;
     this.sprite = 'images/enemy-bug.png';
-    this.collision = false;
+    // this.collision = false;
 };
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.speddArray = [ 220, 320, 140, 450 ];
-Enemy.prototype.bugArray = [ 144, 60, 226 ];
+Enemy.prototype.bugArray = [ 144, 62, 226 ];
 
 Enemy.prototype.ENEMY_STARTING_POSITION = -200;
 
@@ -46,12 +47,13 @@ Enemy.prototype.render = function() {
 };
 
 Enemy.prototype.checkCollisions = function() {
-   if (this.x - 40 <= player.x && this.x + 60 >= player.x && this.y === player.y) {
-     this.speed = 0;
-     this.collision = true;
-     console.log(this.collision);
-     player.x = 200;
-     player.y = 320;
+   if ((this.x <= player.x && this.x + 60 >= player.x ||
+       this.x >= player.x && player.x + 60 >= this.x)
+       && this.y === player.y ) {
+     // this.speed = 0;
+     // this.collision = true;
+     // console.log(this.collision);
+    player.resetPosition();
    }
 };
 // Now write your own player class
@@ -60,11 +62,18 @@ Enemy.prototype.checkCollisions = function() {
 var Player = function(x, y) {
   this.x = x;
   this.y = y;
+  this.startingX = x;
+  this.startingY = y;
   this.sprite = 'images/char-boy.png';
 };
 
-Player.prototype.update = function(dt) {
+Player.prototype.resetPosition = function() {
+   this.x = this.startingX;
+   this.y = this.startingY;
+};
 
+Player.prototype.update = function(dt) {
+  this.reachZoneAchiev();
 };
 
 Player.prototype.render = function() {
@@ -94,9 +103,18 @@ switch (direction) {
         this.y += 82;
       }
       break;
+
 }
 
 console.log(this.y);
+console.log(this.x);
+};
+
+Player.prototype.reachZoneAchiev = function() {
+  if (this.x === 300 && this.y === 62 ) {
+    winGame = true;
+    console.log(winGame);
+  };
 };
 
 var ReachZone = function(x, y) {
@@ -104,6 +122,17 @@ var ReachZone = function(x, y) {
   this.y = y;
   this.sprite = 'images/Selector.png';
 };
+
+var StoneBridge = function(x, y) {
+  this.x = x;
+  this.y = y;
+  this.sprite = 'images/stone-block.png';
+};
+
+StoneBridge.prototype.render = function() {
+  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
 
 ReachZone.prototype.update = function(dt) {
 
@@ -120,7 +149,7 @@ ReachZone.prototype.render = function() {
 // Place the player object in a variable called player
 let allEnemies = [
                   new Enemy( 144, 220),
-                  new Enemy( 60, 320),
+                  new Enemy( 62, 320),
                   new Enemy( 144, 140),
                   new Enemy( 226, 450)];
 
@@ -128,6 +157,9 @@ let player = new Player(200, 390);
 
 
 let reachZone = new ReachZone(302, 40);
+
+const stoneBridge1 = new StoneBridge(200,320);
+// const StoneBridge2 = new StoneBridge(500,300);
 
 
 // This listens for key presses and sends the keys to your
@@ -137,8 +169,19 @@ document.addEventListener('keyup', function(e) {
         37: 'left',
         38: 'up',
         39: 'right',
-        40: 'down'
+        40: 'down',
+        13: 'enter'
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
+
+    if (winGame === true) {
+      allowedKeys[e.keyCode] === 'enter';
+      winGame = false;
+      player.resetPosition();
+      allEnemies.forEach(function(enemy) {
+        enemy.x = enemy.ENEMY_STARTING_POSITION;
+        return;
+      });
+    }
 });
