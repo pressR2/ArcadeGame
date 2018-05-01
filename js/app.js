@@ -1,6 +1,47 @@
 // Enemies our player must avoi
 // let winGame = false;
 let gameState = 'game introduce';
+const stone = 'tileStone';
+const water = 'tilewater';
+const grass = 'tileGrass';
+const rock = 'tileRock';
+const selector = 'tileSelector';
+
+let boardGame = [];
+
+ var Indextile = function(tileType, otherTileOn){
+   this.otherTileOn = otherTileOn;
+   this.tileType = tileType;
+ }
+
+// objectTile = new Indextile();
+
+function fillArray() {
+  rowAmount = 9;
+  colAmount = 9
+  for(let row = 0; row < rowAmount; row ++) {
+    let rowTable = [];
+    for(let col = 0; col < colAmount; col++) {
+      if([0, 4].includes(row)) {
+        rowTable.push(new Indextile(water));
+    }
+      if([1, 2, 3, 5, 6].includes(row)) {
+        rowTable.push(new Indextile(stone));
+      }
+      if([7,8].includes(row)) {
+        rowTable.push(new Indextile(grass));
+      }
+    }
+    boardGame.push(rowTable);
+  }
+  boardGame[4][3] = new Indextile(stone);
+  boardGame[6][3].otherTileOn = rock;
+  boardGame[2][3].otherTileOn = rock;
+  boardGame[3][5].otherTileOn = rock;
+  boardGame[1][7].otherTileOn = selector;
+}
+fillArray();
+
 var Enemy = function(y, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
