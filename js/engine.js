@@ -207,7 +207,6 @@ var Engine = (function(global) {
          */
          // stoneBridge1.render();
          // stoneBridge2.render();
-        reachZone.render();
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });

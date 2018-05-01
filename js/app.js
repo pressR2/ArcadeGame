@@ -41,24 +41,26 @@ function fillArray() {
   boardGame[1][7].otherTileOn = selector;
 }
 fillArray();
-
-var Enemy = function(y, speed) {
+var Enemy = function(row, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.x = this.ENEMY_STARTING_POSITION;
-    this.y = y;
     this.speed = speed;
     this.sprite = 'images/enemy-bug.png';
+    this.row = row;
     // this.collision = false;
 };
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
-Enemy.prototype.speddArray = [ 220, 320, 140, 450 ];
-Enemy.prototype.bugArray = [ 144, 62, 226 ];
+Enemy.prototype.speddArray = [ 240, 380, 140, 500 ];
+Enemy.prototype.getCanvasY = function() {
+    return this.row *83 - 20;
+}
+Enemy.prototype.bugArray = [ 1, 2, 3, 5, 6 ];
 
 Enemy.prototype.ENEMY_STARTING_POSITION = -200;
 
@@ -76,7 +78,7 @@ Enemy.prototype.update = function(dt) {
 
       var startIndexBugArray = this.bugArray.length, randomBugIndex;
        randomBugIndex = Math.floor(Math.random() * startIndexBugArray);
-      this.y = this.bugArray[randomBugIndex];
+      this.row = this.bugArray[randomBugIndex];
     }
     this.checkCollisions();
     // console.log(this.y);
@@ -85,33 +87,34 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.getCanvasY());
 };
 
 Enemy.prototype.checkCollisions = function() {
-   if ((this.x <= player.x && this.x + 60 >= player.x ||
-       this.x >= player.x && player.x + 60 >= this.x)
-       && this.y === player.y ) {
+   if ((this.x <= player.getCanvasX() && this.x + 60 >= player.getCanvasX() ||
+       this.x >= player.getCanvasX() && player.getCanvasX() + 60 >= this.x)
+       && this.row === player.row) {
      // this.speed = 0;
-     // this.collision = true;
-     // console.log(this.collision);
+    // var collision = true;
+    //  console.log(this.collision);
     player.resetPosition();
-   }
+  }
 };
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function(x, y) {
-  this.x = x;
-  this.y = y;
-  this.startingX = x;
-  this.startingY = y;
+var Player = function(col, row) {
+  this.startingRow = row
+  this.startingCol = col;
+  this.col = col;
+  this.row = row;
   this.sprite = 'images/char-boy.png';
 };
 
 Player.prototype.resetPosition = function() {
-   this.x = this.startingX;
-   this.y = this.startingY;
+   this.col = this.startingCol;
+   this.row = this.startingRow;
+   // console.log(this.startingCol);
 };
 
 Player.prototype.update = function(dt) {
@@ -119,94 +122,127 @@ Player.prototype.update = function(dt) {
 };
 
 Player.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
+};
 
+Player.prototype.getCanvasY = function() {
+  return this.row *83 -15;
+};
+
+Player.prototype.getCanvasX = function() {
+  return this.col *101;
 };
 
 Player.prototype.handleInput = function(direction) {
 switch (direction) {
   case 'right':
-    if (this.x <= 300) {
-      this.x += 100;
+    if (this.col <= 7) {
+      this.col += 1;
+      if (boardGame[this.row][this.col].otherTileOn === rock ||
+        boardGame[this.row][this.col].tileType === water) {
+        this.col -= 1;
+      }
     }
     break;
     case 'left':
-      if (this.x >= 100) {
-      this.x -= 100;
+      if (this.col >= 1) {
+        this.col -= 1;
+        if (boardGame[this.row][this.col].otherTileOn === rock ||
+          boardGame[this.row][this.col].tileType === water) {
+          this.col +=1;
+        }
     }
     break;
     case 'up':
-      if (this.y >= 100) {
-      this.y -= 82;
+      if (this.row >= 1) {
+      this.row -= 1;
+      if (boardGame[this.row][this.col].otherTileOn === rock ||
+        boardGame[this.row][this.col].tileType === water) {
+        this.row +=1;
+      }
     }
     break;
     case 'down':
-      if (this.y <= 380) {
-        this.y += 82;
+      if (this.row <= 7) {
+        this.row += 1;
+        if (boardGame[this.row][this.col].otherTileOn === rock ||
+          boardGame[this.row][this.col].tileType === water) {
+          this.row -=1;
+        }
       }
       break;
-
 }
 
-console.log(this.y);
-console.log(this.x);
+// console.log(this.row);
+// console.log(this.col);
+};
+
+function changeStateGame() {
+  gameState = 'game win';
+  player.resetPosition();
 };
 
 Player.prototype.reachZoneAchiev = function() {
-  if (this.x === 300 && this.y === 62 ) {
-    gameState = 'game win';
+  if (boardGame[this.row][this.col].otherTileOn === selector ) {
+
+    allEnemies.forEach(function(enemy) {
+      enemy.speed = 0;
+    });
+
+    setTimeout(changeStateGame, 500);
     // console.log(winGame);
   };
 };
 
-var ReachZone = function(x, y) {
-  this.x = x;
-  this.y = y;
-  this.sprite = 'images/Selector.png';
-};
+// var ReachZone = function(x, y) {
+//   this.x = x;
+//   this.y = y;
+//   this.sprite = 'images/Selector.png';
+// };
 
-var StoneBridge = function(x, y) {
-  this.x = x;
-  this.y = y;
-  this.sprite = 'images/stone-block.png';
-};
-
-StoneBridge.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
-
-ReachZone.prototype.update = function(dt) {
-
-};
-
-ReachZone.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-
-};
+// var StoneBridge = function(x, y) {
+//   this.x = x;
+//   this.y = y;
+//   this.sprite = 'images/stone-block.png';
+// };
+//
+// StoneBridge.prototype.render = function() {
+//   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+// };
+//
+//
+// ReachZone.prototype.update = function(dt) {
+//
+// };
+//
+// ReachZone.prototype.render = function() {
+//   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+//
+// };
 
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 let allEnemies = [
-                  new Enemy( 144, 220),
-                  new Enemy( 62, 320),
-                  new Enemy( 144, 140),
-                  new Enemy( 226, 450)];
+                  new Enemy(),
+                  new Enemy(),
+                  new Enemy(),
+                  new Enemy()];
 
-let player = new Player(200, 390);
+let player = new Player(4, 8);
 
 
-let reachZone = new ReachZone(302, 43);
-
-const stoneBridge1 = new StoneBridge(200,320);
+// let reachZone = new ReachZone(302, 43);
+//
+// const stoneBridge1 = new StoneBridge(200,320);
 // const StoneBridge2 = new StoneBridge(500,300);
 
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
+
     var allowedKeys = {
         37: 'left',
         38: 'up',
@@ -227,10 +263,12 @@ document.addEventListener('keyup', function(e) {
       if (allowedKeys[e.keyCode] === 'enter') {
         gameState = 'start game';
       // winGame = false;
-        player.resetPosition();
         allEnemies.forEach(function(enemy) {
         enemy.x = enemy.ENEMY_STARTING_POSITION;
         return;
+      });
+      allEnemies.forEach(function(enemy) {
+        enemy.update();
       });
     }
     }
