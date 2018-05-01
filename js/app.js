@@ -1,5 +1,6 @@
 // Enemies our player must avoi
-let winGame = false;
+// let winGame = false;
+let gameState = 'game introduce';
 var Enemy = function(y, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -112,8 +113,8 @@ console.log(this.x);
 
 Player.prototype.reachZoneAchiev = function() {
   if (this.x === 300 && this.y === 62 ) {
-    winGame = true;
-    console.log(winGame);
+    gameState = 'game win';
+    // console.log(winGame);
   };
 };
 
@@ -156,7 +157,7 @@ let allEnemies = [
 let player = new Player(200, 390);
 
 
-let reachZone = new ReachZone(302, 40);
+let reachZone = new ReachZone(302, 43);
 
 const stoneBridge1 = new StoneBridge(200,320);
 // const StoneBridge2 = new StoneBridge(500,300);
@@ -175,13 +176,21 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 
-    if (winGame === true) {
-      allowedKeys[e.keyCode] === 'enter';
-      winGame = false;
-      player.resetPosition();
-      allEnemies.forEach(function(enemy) {
+    if (gameState === 'game introduce') {
+      if(allowedKeys[e.keyCode] === 'enter') {
+      gameState = 'start game';
+    }
+    }
+
+    if (gameState === 'game win') {
+      if (allowedKeys[e.keyCode] === 'enter') {
+        gameState = 'start game';
+      // winGame = false;
+        player.resetPosition();
+        allEnemies.forEach(function(enemy) {
         enemy.x = enemy.ENEMY_STARTING_POSITION;
         return;
       });
+    }
     }
 });

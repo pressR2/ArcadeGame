@@ -110,8 +110,26 @@ var Engine = (function(global) {
          * for that particular row of the game level.
          */
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        if (winGame === false) {
-        var rowImages = [
+        if (gameState === 'game introduce') {
+          ctx.fillStyle = 'black';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = 'white';
+          ctx.font = '35px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('Hello and Welcome!', canvas.width/2, 55)
+          ctx.font = '25px monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText('Your goal', 82, 110);
+          ctx.drawImage(Resources.get('images/Selector.png'), 90, 150);
+          ctx.fillText('Your enemy', 275, 110);
+          ctx.drawImage(Resources.get('images/enemy-bug.png'), 295, 180);
+          ctx.textAlign = 'center';
+          ctx.fillText('Use keyboard to move', canvas.width/2, 385);
+          ctx.drawImage(Resources.get('images/keyboard.png'), 188, 410);
+          ctx.fillText('Press ENTER to start game', canvas.width/2, 570);
+
+        } else if (gameState === 'start game') {
+            var rowImages = [
                 'images/water-block.png',   // Top row is water
                 'images/stone-block.png',   // Row 1 of 3 of stone
                 'images/stone-block.png',   // Row 2 of 3 of stone
@@ -148,16 +166,21 @@ var Engine = (function(global) {
         renderEntities();
       } else {
           ctx.fillStyle = 'black';
-          ctx.fillRect(10, 10, 505, 606);
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
           ctx.fillStyle = 'white';
+          ctx.textAlign = 'center';
+          const imageSelector = Resources.get('images/Selector.png');
+          ctx.drawImage(imageSelector, (canvas.width - imageSelector.width)/2, 70);
+          ctx.drawImage(Resources.get('images/char-boy.png'), 202, 60);
           ctx.font = '30px monospace';
-          ctx.fillText('You won! Congratulations', 252, 200);
+          ctx.fillText('You won! Congratulations', canvas.width/2, 300);
           ctx.font = '25px monospace';
           ctx.textAlign = 'center';
-          ctx.fillText('Try again?', 252, 240);
-          ctx.fillText('Press ENTER', 252, 280);
+          ctx.fillText('Try again?', canvas.width/2, 340);
+          ctx.fillText('Press ENTER', canvas.width/2, 380);
         }
     }
+
 
     /* This function is called by the render function and is called on each game
      * tick. Its purpose is to then call the render functions you have defined
@@ -196,7 +219,8 @@ var Engine = (function(global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
-        'images/Selector.png'
+        'images/Selector.png',
+        'images/keyboard.png'
     ]);
     Resources.onReady(init);
 
