@@ -96,7 +96,7 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
-        // reachZone.update();
+        // heart.update()
     }
 
     /* This function initially draws the "game level", it will then call
@@ -160,10 +160,10 @@ var Engine = (function(global) {
                  * we're using them over and over.
                  */
                  if(boardGame[row][col].tileType === white) {
-                   ctx.fillStyle = 'black';
-                   ctx.font = '20px monospace';
-                   ctx.textAlign = 'center';
-                     ctx.fillText('You won! Congratulations',200, 100);
+                   // ctx.fillStyle = 'black';
+                   // ctx.font = '20px monospace';
+                   // ctx.textAlign = 'center';
+                   //   ctx.fillText('You won! Congratulations',200, 100);
               }
                 if(boardGame[row][col].tileType === water) {
                   ctx.drawImage(Resources.get('images/water-block.png'), col * 101, row * 83);
@@ -184,8 +184,10 @@ var Engine = (function(global) {
                 }
                 if(boardGame[row][col].otherTileOn === bug) {
                   ctx.drawImage(Resources.get('images/enemy-bug.png'), col * 101, row * 83 - 25);
-
               }
+              // if(boardGame[row][col].otherTileOn === heart) {
+              //   ctx.drawImage(Resources.get('images/Heart.png'), col * 101 +30, row * 83 + 60, 101*0.5, 171*0.5);
+              // }
             }
           }
         renderEntities();
@@ -217,10 +219,12 @@ var Engine = (function(global) {
          */
          // stoneBridge1.render();
          // stoneBridge2.render();
+         heart.render();
+         // heart2.render();
+
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-
         player.render();
 
     }
@@ -249,7 +253,9 @@ var Engine = (function(global) {
         'images/char-cat-girl.png',
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
-        'images/char-princess-girl.png'
+        'images/char-princess-girl.png',
+        'images/Heart.png',
+        'images/char-boy2.png'
     ]);
     Resources.onReady(init);
 

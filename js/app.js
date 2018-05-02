@@ -8,6 +8,7 @@ const rock = 'tileRock';
 const selector = 'tileSelector';
 const bug = 'tileBug';
 const white = 'tileWhite';
+// const heart = 'tileHeart';
 
 let boardGame = [];
 
@@ -46,6 +47,8 @@ function fillArray() {
   boardGame[2][7].otherTileOn = selector;
   boardGame[2][2].otherTileOn = bug;
   boardGame[2][4].otherTileOn = rock;
+  // boardGame[0][4].otherTileOn = heart;
+  // boardGame[2][4].otherTileOn = heart;
 }
 fillArray();
 var Enemy = function(sprite,row, speed) {
@@ -104,8 +107,18 @@ Enemy.prototype.checkCollisions = function() {
      // this.speed = 0;
     // var collision = true;
     //  console.log(this.collision);
-    player.resetPosition();
+    // player.resetPosition();
+    collision = true;
+    setTimeout(blinkingPlayer, 300);
+    heart.countHarts -= 1;
+    this.x = player.getCanvasX() + 101;
+    if(heart.countHarts === 0) {
+      player.resetPosition();
+    }
   }
+  // if (collision === true) {
+  //
+  // }
 };
 // Now write your own player class
 // This class requires an update(), render() and
@@ -128,13 +141,38 @@ Player.prototype.update = function(dt) {
   this.reachZoneAchiev();
 };
 
+var frequency = 100;
+let collision = false;
 let playerState = 'no hold bug';
 Player.prototype.render = function() {
-  ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
-  if(playerState === 'hold bug') {
+  if(collision === true) {
+  // https://gamedev.stackexchange.com/questions/70116/how-do-i-make-a-sprite-blink-on-an-html5-canvas
+
+    if (Math.floor(Date.now() / frequency) % 2) {
+      ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
+      if(playerState === 'hold bug') {
+          // ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
+          ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
+      // }if (! blinking || Math.floor(Date.now() / frequency) % 2) {
+      //         ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
+      //         ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
+      //
+      }
+    }
+
+
+  } else {
     ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
-    ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX(), this.getCanvasY() - 55);
+    if(playerState === 'hold bug') {
+        // ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
+        ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
+    // }if (! blinking || Math.floor(Date.now() / frequency) % 2) {
+    //         ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
+    //         ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
+    //
+    }
   }
+
 };
 
 Player.prototype.getCanvasY = function() {
@@ -206,6 +244,12 @@ switch (direction) {
 // console.log(this.row);
 // console.log(this.col);
 };
+function blinkingPlayer(){
+  if(collision === true) {
+    collision = false;
+  }
+};
+
 
 
 function changeStateGame() {
@@ -224,31 +268,41 @@ Player.prototype.reachZoneAchiev = function() {
   };
 };
 
-// var ReachZone = function(x, y) {
-//   this.x = x;
-//   this.y = y;
-//   this.sprite = 'images/Selector.png';
+var Heart = function(countHarts, x, y) {
+  this.x = x;
+  this.y = y;
+  this.countHarts = countHarts;
+  this.sprite = 'images/Heart.png';
+}
+
+
+
+Heart.prototype.render = function() {
+  if (this.countHarts >=1) {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 101*0.4, 171*0.4);
+  }
+  if(this.countHarts >=2) {
+    ctx.drawImage(Resources.get(this.sprite), this.x + 45, this.y, 101*0.4, 171*0.4);
+  }
+  if(this.countHarts >=3) {
+    ctx.drawImage(Resources.get(this.sprite), this.x + 90, this.y, 101*0.4, 171*0.4);
+  }
+};
+
+Heart.prototype.update = function(dt) {
+
+};
+
+// Heart.prototype.getCanvasY = function() {
+//   return this.row *83;
+// };
+//
+// Heart.prototype.getCanvasX = function() {
+//   return this.col *101;
 // };
 
-// var StoneBridge = function(x, y) {
-//   this.x = x;
-//   this.y = y;
-//   this.sprite = 'images/stone-block.png';
-// };
-//
-// StoneBridge.prototype.render = function() {
-//   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-// };
-//
-//
-// ReachZone.prototype.update = function(dt) {
-//
-// };
-//
-// ReachZone.prototype.render = function() {
-//   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-//
-// };
+const heart = new Heart(3,0,70);
+// const heart2 = new Heart(45,70);
 
 
 // Now instantiate your objects.
@@ -262,12 +316,6 @@ let allEnemies = [
                 ];
 
 let player = new Player(4, 9);
-
-
-// let reachZone = new ReachZone(302, 43);
-//
-// const stoneBridge1 = new StoneBridge(200,320);
-// const StoneBridge2 = new StoneBridge(500,300);
 
 
 // This listens for key presses and sends the keys to your
