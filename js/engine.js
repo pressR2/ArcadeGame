@@ -25,7 +25,7 @@ var Engine = (function(global) {
         lastTime;
 
     canvas.width = 909;
-    canvas.height = 855;
+    canvas.height = 938;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
@@ -140,7 +140,7 @@ var Engine = (function(global) {
             //     'images/grass-block.png',   // Row 1 of 2 of grass
             //     'images/grass-block.png'    // Row 2 of 2 of grass
             // ],
-            numRows = 9,
+            numRows = 10,
             numCols = 9,
             row, col;
 
@@ -159,6 +159,12 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
+                 if(boardGame[row][col].tileType === white) {
+                   ctx.fillStyle = 'black';
+                   ctx.font = '20px monospace';
+                   ctx.textAlign = 'center';
+                     ctx.fillText('You won! Congratulations',200, 100);
+              }
                 if(boardGame[row][col].tileType === water) {
                   ctx.drawImage(Resources.get('images/water-block.png'), col * 101, row * 83);
               }
@@ -176,8 +182,12 @@ var Engine = (function(global) {
                 if(boardGame[row][col].otherTileOn === selector) {
                   ctx.drawImage(Resources.get('images/Selector.png'), col * 101, row * 83 - 40);
                 }
+                if(boardGame[row][col].otherTileOn === bug) {
+                  ctx.drawImage(Resources.get('images/enemy-bug.png'), col * 101, row * 83 - 25);
+
               }
             }
+          }
         renderEntities();
       } else {
           ctx.fillStyle = 'black';
@@ -235,7 +245,11 @@ var Engine = (function(global) {
         'images/char-boy.png',
         'images/Selector.png',
         'images/keyboard.png',
-        'images/Rock.png'
+        'images/Rock.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png'
     ]);
     Resources.onReady(init);
 
