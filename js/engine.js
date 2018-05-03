@@ -105,28 +105,113 @@ var Engine = (function(global) {
      * they are flipbooks creating the illusion of animation but in reality
      * they are just drawing the entire screen over and over.
      */
+     var speddText = 150;
+     var lineHeight = 33;
+     var maxWidth = 765;
+     var x = (canvas.width - maxWidth) / 2;
+      var y = 60;
+    var wrapWord = function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+             var words = text.split(' ');
+             var line = '';
+
+             for(var n = 0; n < words.length; n++) {
+               var testLine = line + words[n] + ' ';
+               var metrics = ctx.measureText(testLine);
+               var testWidth = metrics.width;
+               if (testWidth > maxWidth && n > 0) {
+                 ctx.fillText(line, x, y);
+                 line = words[n] + ' ';
+                 y += lineHeight;
+               }
+               else {
+                 line = testLine;
+               }
+             }
+             ctx.fillText(line, x, y);
+           }
+
+
+           function movingStory () {
+             y -= 0.75;
+         };
+
     function render() {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
         ctx.clearRect(0,0,canvas.width,canvas.height);
         if (gameState === 'game introduce') {
+          var text = 'PRESS ENTER TO SKIP                           '+
+          '                                                     '+
+          '[Courent number: 1 beetle to extinction the species]' +
+          '                                                        '+
+          ' After that great BicPashandra was asked about what is she doing to ' +
+          'always be in good shape, said  drink "Beetle juice", world gone upside down.      ' +
+          'This an innocent joke gave birth huge butchery and madness. '+
+          '                                            '+
+          'Girls from ' +
+          'around the world to wanted to be fit was drinking beetle juice ' +
+          '(sometimes even something looks like...) every 4 hours every day. ' +
+          'Beetle juice becamed so popular that there was created hundreds of ' +
+          'recipes. Supposedly this whit pinch of cinnamon tasted delightful, ' +
+          'but it\'s only rumors. Since that time no one was seeing beetle. '+
+          '                         '+
+          'And ' +
+          'yet a boy kept beetle at home. They was very befriended. By the time ' +
+          'the boy forget close the window. Group of passing girls stolen ' +
+          'beetle, last beetle as it turned out. Since then, they have been ' +
+          'lock up the bug.                                  The time is running...'
+
+          ctx.fillStyle = 'black';
+          ctx.font = '26px monospace';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#aec916';
+          wrapWord(ctx, text, x, y, maxWidth, lineHeight);
+            // movingStory();
+            // ctx.fillStyle = '#9fec00';
+
+        } else if(gameState === 'gameTitle'){
+
           ctx.fillStyle = 'black';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           ctx.fillStyle = 'white';
-          ctx.font = '35px monospace';
+          ctx.fillText('Save beetle', canvas.width/2, 420)
+          ctx.font = '160px Jazz LET, fantasy';
           ctx.textAlign = 'center';
-          ctx.fillText('Hello and Welcome!', canvas.width/2, 55)
-          ctx.font = '25px monospace';
-          ctx.textAlign = 'left';
-          ctx.fillText('Your goal', 82, 110);
-          ctx.drawImage(Resources.get('images/Selector.png'), 90, 150);
-          ctx.fillText('Your enemy', 275, 110);
-          ctx.drawImage(Resources.get('images/enemy-bug.png'), 295, 180);
+
+        }else if (gameState === 'instructions') {
+          ctx.fillStyle = 'black';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = 'white';
+          ctx.font = '60px monospace';
+          ctx.fillText('About Game', canvas.width/2, 55)
+
           ctx.textAlign = 'center';
-          ctx.fillText('Use keyboard to move', canvas.width/2, 385);
-          ctx.drawImage(Resources.get('images/keyboard.png'), 188, 410);
-          ctx.fillText('Press ENTER to start game', canvas.width/2, 570);
+          ctx.font = '40px monospace';
+          ctx.fillStyle = '#aec916';
+          ctx.fillText('Your goal',canvas.width/2 , 110);
+
+          ctx.drawImage(Resources.get('images/grass-block.png'), 400, 210, 101*1.1, 171*0.65);
+          ctx.drawImage(Resources.get('images/Selector.png'), 405, 150);
+          ctx.drawImage(Resources.get('images/char-boy.png'), 405, 150,101*1, 171*1);
+          ctx.drawImage(Resources.get('images/enemy-bug.png'), 415, 130, 101*0.75, 171*0.75);
+
+          ctx.fillText('Your enemys', canvas.width/2, 400);
+          ctx.font = '24px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = 'red';
+          ctx.drawImage(Resources.get('images/char-cat-girl.png'), canvas.width/6 - 3, 400);
+          ctx.drawImage(Resources.get('images/char-horn-girl.png'),canvas.width/6 + canvas.width/6, 400);
+          ctx.drawImage(Resources.get('images/char-pink-girl.png'),canvas.width/6 + canvas.width/6+canvas.width/6 - 9, 400);
+
+          ctx.drawImage(Resources.get('images/char-princess-girl.png'),canvas.width/6 + canvas.width/6+canvas.width/6 + canvas.width/6+4, 400);
+          ctx.fillText('[KRimza]   [CatZera]   [Doasia]   [HexaMajster]', canvas.width/2 , 570);
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#aec916';
+          ctx.font = '40px monospace';
+          ctx.fillText('Use keyboard to move', canvas.width/2, 640);
+          ctx.drawImage(Resources.get('images/keyboard.png'), 370, 660);
+          ctx.fillText('Press ENTER to start game', canvas.width/2, 840);
 
         } else if (gameState === 'start game') {
             var
@@ -202,22 +287,39 @@ var Engine = (function(global) {
             }
           }
         renderEntities();
-      } else {
+      } else if (gameState === 'game win'){
           ctx.fillStyle = 'black';
           ctx.fillRect(0, 0, canvas.width, canvas.height);
           ctx.fillStyle = 'white';
           ctx.textAlign = 'center';
-          const imageSelector = Resources.get('images/Selector.png');
-          ctx.drawImage(imageSelector, (canvas.width - imageSelector.width)/2, 70);
-          ctx.drawImage(Resources.get('images/char-boy.png'), 202, 60);
-          ctx.font = '30px monospace';
-          ctx.fillText('You won! Congratulations', canvas.width/2, 300);
-          ctx.font = '25px monospace';
+          ctx.font = '55px monospace';
+          // ctx.fillStyle = '#aec916';
+
+          ctx.drawImage(Resources.get('images/char-cat-girl.png'), canvas.width/2+20 , 560);
+          ctx.drawImage(Resources.get('images/char-horn-girl.png'),canvas.width/2+20, 320);
+          ctx.drawImage(Resources.get('images/char-pink-girl.png'),canvas.width/2+20 , 485);
+          ctx.drawImage(Resources.get('images/char-princess-girl.png'),canvas.width/2+20, 405);
+
+          ctx.drawImage(Resources.get('images/grass-block.png'), 400, 260, 101*1.1, 171*0.65);
+          ctx.drawImage(Resources.get('images/Selector.png'), 405, 200);
+          ctx.drawImage(Resources.get('images/char-boy.png'), 405, 200,101*1, 171*1);
+          ctx.drawImage(Resources.get('images/enemy-bug.png'), 415, 180, 101*0.75, 171*0.75);
+
           ctx.textAlign = 'center';
-          ctx.fillText('Try again?', canvas.width/2, 340);
-          ctx.fillText('Press ENTER', canvas.width/2, 380);
+          // const imageSelector = Resources.get('images/Selector.png');
+          // ctx.drawImage(imageSelector, (canvas.width - imageSelector.width)/2, 70);
+          // ctx.drawImage(Resources.get('images/char-boy.png'), 202, 60);
+          // ctx.font = '30px monospace';
+          ctx.fillText('You won! Congratulations', canvas.width/2, 150);
+
+          ctx.font = '35px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#aec916';
+          ctx.fillText('Try again?', canvas.width/2, 775);
+          ctx.fillText('Press ENTER', canvas.width/2, 825);
         }
-    }
+        }
+
 
 
     /* This function is called by the render function and is called on each game
@@ -265,8 +367,7 @@ var Engine = (function(global) {
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
-        'images/Heart.png',
-        'images/char-boy2.png'
+        'images/Heart.png'
     ]);
     Resources.onReady(init);
 

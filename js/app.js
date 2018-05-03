@@ -1,5 +1,8 @@
 // Enemies our player must avoi
 // let winGame = false;
+// let gameState = 'gameTitle';
+// let gameState = 'instructions';
+// let gameState = 'game win';
 let gameState = 'game introduce';
 const stone = 'tileStone';
 const water = 'tileWater';
@@ -208,7 +211,7 @@ var Player = function(col, row) {
 Player.prototype.resetPosition = function() {
    this.col = this.startingCol;
    this.row = this.startingRow;
-   
+
 };
 
 Player.prototype.update = function(dt) {
@@ -322,8 +325,15 @@ function blinkingPlayer(){
 
 
 function changeStateGame() {
+  if (levelState === 'level 2') {
+    gameState = 'game win';
+    levelEnd = false;
+    levelState = 'level 1';
+  }
+  // gameState = 'ga win';
+  if(levelState === 'level 1' && levelEnd === true){
+    levelEnd = false;
   levelState = 'level 2';
-  // gameState = 'game win';
   player.resetPosition();
   playerState = 'no hold bug';
   boardGame = [];
@@ -331,7 +341,7 @@ function changeStateGame() {
   restartEnemiesLv2();
   ChangeReachZoneXY();
   bugPositionInNewMap();
-
+}
 };
 
 function ChangeReachZoneXY() {
@@ -358,13 +368,13 @@ function ChangeReachZoneXY() {
       return boardGame[2][1].otherTileOn = bug;
     }
   };
-
+var levelEnd = false;
 Player.prototype.reachZoneAchiev = function() {
-  if ( playerState === 'hold bug' && boardGame[this.row][this.col].otherTileOn === selector && levelState === 'level 1') {
+  if (levelEnd === false && (playerState === 'hold bug' && boardGame[this.row][this.col].otherTileOn === selector)) {
     allEnemies.forEach(function(enemy) {
       enemy.speed = 0;
     });
-
+    levelEnd = true;
     setTimeout(changeStateGame, 500);
     // console.log(winGame);
   };
@@ -441,25 +451,40 @@ document.addEventListener('keyup', function(e) {
 
     if (gameState === 'game introduce') {
       if(allowedKeys[e.keyCode] === 'enter') {
-      gameState = 'start game';
+      // gameState = 'start game';
+      gameState = 'gameTitle';
     }
+  } else if(gameState === 'gameTitle') {
+    if(allowedKeys[e.keyCode] === 'enter') {
+    gameState = 'instructions';
   }
+} else if (gameState === 'instructions') {
+  if(allowedKeys[e.keyCode] === 'enter') {
+  gameState = 'start game';
+}
+}
+// if (levelState === 'level 2') {
+//   gameState = 'start game';
+// }
 
 
-    // if()
     if (gameState === 'game win') {
       if (allowedKeys[e.keyCode] === 'enter') {
+        levelState = 'level 1';
+        boardGame = [];
+        fillArray();
         gameState = 'start game';
+        player.resetPosition();
         playerState = 'no hold bug';
-        // boardGame[2][2].otherTileOn = bug
         bugPositionInNewMap();
+        heart.restartPosition();
         allEnemies.forEach(function(enemy) {
-        enemy.x = enemy.ENEMY_STARTING_POSITION;
-        return;
+          enemy.newSpeddLv2();
+          enemy.bugArray = [ 2, 3, 4, 6, 7 ];
+          enemy.newYpositionLv2();
+          return;
       });
-      allEnemies.forEach(function(enemy) {
-        enemy.update();
-      });
+
     }
     }
 });
