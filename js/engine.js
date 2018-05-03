@@ -160,11 +160,21 @@ var Engine = (function(global) {
                  * we're using them over and over.
                  */
                  if(boardGame[row][col].tileType === white) {
-                   // ctx.fillStyle = 'black';
-                   // ctx.font = '20px monospace';
-                   // ctx.textAlign = 'center';
-                   //   ctx.fillText('You won! Congratulations',200, 100);
-              }
+                   ctx.fillStyle = 'black';
+                   ctx.font = '25px monospace';
+                   ctx.textAlign = 'left';
+                  ctx.fillText('Lives:',3, 110);
+
+                // if(heart.countHearts === 0){
+                // //     // ctx.fillStyle = 'white';
+                // //     // ctx.fillRect(0, 0, 60, 100);
+                // //     // ctx.fillStyle = 'black';
+                // //     // ctx.font = '25px monospace';
+                // //     // ctx.textAlign = 'left';
+                //    ctx.fillText('0',90, 110);
+                //   }
+                }
+
                 if(boardGame[row][col].tileType === water) {
                   ctx.drawImage(Resources.get('images/water-block.png'), col * 101, row * 83);
               }
@@ -177,7 +187,8 @@ var Engine = (function(global) {
 
 
                 if(boardGame[row][col].otherTileOn === rock) {
-                  ctx.drawImage(Resources.get('images/Rock.png'), col * 101, row * 83 - 22);
+                  ctx.drawImage(Resources.get('images/Rock.png'), col * 101 -6, row * 83 - 24, 101*1.14, 171);
+                  // ctx.drawImage(Resources.get('images/Rock.png'), col * 101 -7.5, row * 83 - 100, 101*1.14, 171*1.5);
                 }
                 if(boardGame[row][col].otherTileOn === selector) {
                   ctx.drawImage(Resources.get('images/Selector.png'), col * 101, row * 83 - 40);

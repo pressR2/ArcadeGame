@@ -11,13 +11,10 @@ const white = 'tileWhite';
 // const heart = 'tileHeart';
 
 let boardGame = [];
-
  var Indextile = function(tileType, otherTileOn){
    this.otherTileOn = otherTileOn;
    this.tileType = tileType;
  }
-
-// objectTile = new Indextile();
 
 function fillArray() {
   rowAmount = 10;
@@ -47,10 +44,76 @@ function fillArray() {
   boardGame[2][7].otherTileOn = selector;
   boardGame[2][2].otherTileOn = bug;
   boardGame[2][4].otherTileOn = rock;
-  // boardGame[0][4].otherTileOn = heart;
-  // boardGame[2][4].otherTileOn = heart;
 }
 fillArray();
+
+function fillArray2() {
+  rowAmount = 10;
+  colAmount = 9
+  for(let row = 0; row < rowAmount; row ++) {
+    let rowTable2 = [];
+    for(let col = 0; col < colAmount; col++) {
+      if([0].includes(row)) {
+        rowTable2.push(new Indextile(white))
+      }
+      if([1, 2].includes(row)) {
+        rowTable2.push(new Indextile(water));
+    }
+      if([4, 5, 6, 7, 8].includes(row)) {
+        rowTable2.push(new Indextile(grass));
+      }
+      if([3, 9].includes(row)) {
+        rowTable2.push(new Indextile(stone));
+      }
+    }
+    boardGame.push(rowTable2);
+  }
+  boardGame[2][1] = new Indextile(stone);
+  boardGame[2][5] = new Indextile(stone);
+  // boardGame[2][7] = new Indextile(stone);
+  boardGame[8][5].otherTileOn = rock;
+  boardGame[8][6].otherTileOn = rock;
+  boardGame[8][8].otherTileOn = rock;
+  boardGame[6][8].otherTileOn = rock;
+  boardGame[6][6].otherTileOn = rock;
+  boardGame[6][7].otherTileOn = rock;
+  boardGame[5][8].otherTileOn = rock;
+  boardGame[7][8].otherTileOn = rock;
+  boardGame[4][8].otherTileOn = rock;
+
+  boardGame[4][5].otherTileOn = rock;
+  boardGame[4][6].otherTileOn = rock;
+  boardGame[4][8].otherTileOn = rock;
+  boardGame[6][3].otherTileOn = selector;
+  boardGame[2][1].otherTileOn = bug;
+  boardGame[3][8].otherTileOn = rock;
+
+  boardGame[4][4].otherTileOn = rock;
+  boardGame[5][4].otherTileOn = rock;
+  boardGame[6][4].otherTileOn = rock;
+  boardGame[7][4].otherTileOn = rock;
+  boardGame[8][4].otherTileOn = rock;
+
+  boardGame[8][0].otherTileOn = rock;
+  boardGame[8][1].otherTileOn = rock;
+  boardGame[8][2].otherTileOn = rock;
+
+  boardGame[4][0].otherTileOn = rock;
+  boardGame[5][0].otherTileOn = rock;
+  boardGame[6][0].otherTileOn = rock;
+  boardGame[7][0].otherTileOn = rock;
+  boardGame[8][0].otherTileOn = rock;
+  boardGame[4][3].otherTileOn = rock;
+  boardGame[4][1].otherTileOn = rock;
+  boardGame[5][3].otherTileOn = rock;
+  boardGame[6][2].otherTileOn = rock;
+  boardGame[3][0].otherTileOn = rock;
+  boardGame[8][3].otherTileOn = rock;
+
+  // boardGame[0][4].otherTileOn = heart;
+  // boardGame[2][4].otherTileOn = heart;
+};
+
 var Enemy = function(sprite,row, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -67,12 +130,28 @@ var Enemy = function(sprite,row, speed) {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.speddArray = [ 240, 380, 140, 500 ];
+// Enemy.prototype.speddArray = [ 140, 140, 140, 140 ];
 Enemy.prototype.getCanvasY = function() {
     return this.row *83 - 12;
 }
+
 Enemy.prototype.bugArray = [ 2, 3, 4, 6, 7 ];
 
+
 Enemy.prototype.ENEMY_STARTING_POSITION = -200;
+
+Enemy.prototype.newSpeddLv2 = function() {
+  this.x = this.ENEMY_STARTING_POSITION;
+    var speddArrayLength = this.speddArray.length;
+    let randomIndex = Math.floor(Math.random() * speddArrayLength);
+  this.speed = this.speddArray[randomIndex];
+};
+
+Enemy.prototype.newYpositionLv2 = function() {
+  var startIndexBugArray = this.bugArray.length, randomBugIndex;
+   randomBugIndex = Math.floor(Math.random() * startIndexBugArray);
+  this.row = this.bugArray[randomBugIndex];
+};
 
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
@@ -81,14 +160,9 @@ Enemy.prototype.update = function(dt) {
     if (this.x < ctx.canvas.width) {
       this.x += (this.speed * dt);
     } else {
-      this.x = this.ENEMY_STARTING_POSITION;
-        var currentIndex = this.speddArray.length;
-        let randomIndex = Math.floor(Math.random() * currentIndex);
-      this.speed = this.speddArray[randomIndex];
+      this.newSpeddLv2();
 
-      var startIndexBugArray = this.bugArray.length, randomBugIndex;
-       randomBugIndex = Math.floor(Math.random() * startIndexBugArray);
-      this.row = this.bugArray[randomBugIndex];
+      this.newYpositionLv2();
     }
     this.checkCollisions();
     // console.log(this.y);
@@ -101,24 +175,24 @@ Enemy.prototype.render = function() {
 };
 
 Enemy.prototype.checkCollisions = function() {
-   if ((this.x <= player.getCanvasX() && this.x + 60 >= player.getCanvasX() ||
+
+   if (collision === false &&((this.x <= player.getCanvasX() && this.x + 60 >= player.getCanvasX() ||
        this.x >= player.getCanvasX() && player.getCanvasX() + 60 >= this.x)
-       && this.row === player.row) {
+       && this.row === player.row)) {
      // this.speed = 0;
     // var collision = true;
     //  console.log(this.collision);
     // player.resetPosition();
     collision = true;
-    setTimeout(blinkingPlayer, 300);
-    heart.countHarts -= 1;
-    this.x = player.getCanvasX() + 101;
-    if(heart.countHarts === 0) {
+    setTimeout(blinkingPlayer, 1200);
+    heart.countHearts -= 1;
+    if(heart.countHearts === 0) {
       player.resetPosition();
+      heart.restartPosition();
+      playerState = 'no hold bug';
+      bugPositionInNewMap();
     }
   }
-  // if (collision === true) {
-  //
-  // }
 };
 // Now write your own player class
 // This class requires an update(), render() and
@@ -134,7 +208,7 @@ var Player = function(col, row) {
 Player.prototype.resetPosition = function() {
    this.col = this.startingCol;
    this.row = this.startingRow;
-   // console.log(this.startingCol);
+   
 };
 
 Player.prototype.update = function(dt) {
@@ -144,6 +218,7 @@ Player.prototype.update = function(dt) {
 var frequency = 100;
 let collision = false;
 let playerState = 'no hold bug';
+let levelState = 'level 1';
 Player.prototype.render = function() {
   if(collision === true) {
   // https://gamedev.stackexchange.com/questions/70116/how-do-i-make-a-sprite-blink-on-an-html5-canvas
@@ -151,12 +226,9 @@ Player.prototype.render = function() {
     if (Math.floor(Date.now() / frequency) % 2) {
       ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
       if(playerState === 'hold bug') {
-          // ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
+
           ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
-      // }if (! blinking || Math.floor(Date.now() / frequency) % 2) {
-      //         ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
-      //         ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
-      //
+
       }
     }
 
@@ -164,12 +236,9 @@ Player.prototype.render = function() {
   } else {
     ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
     if(playerState === 'hold bug') {
-        // ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
+
         ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
-    // }if (! blinking || Math.floor(Date.now() / frequency) % 2) {
-    //         ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
-    //         ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
-    //
+
     }
   }
 
@@ -253,12 +322,45 @@ function blinkingPlayer(){
 
 
 function changeStateGame() {
-  gameState = 'game win';
+  levelState = 'level 2';
+  // gameState = 'game win';
   player.resetPosition();
+  playerState = 'no hold bug';
+  boardGame = [];
+  fillArray2();
+  restartEnemiesLv2();
+  ChangeReachZoneXY();
+  bugPositionInNewMap();
+
 };
 
+function ChangeReachZoneXY() {
+  if(levelState === 'level 1') {
+      return boardGame[2][7].otherTileOn = selector;
+    } else {
+      return boardGame[6][3].otherTileOn = selector;
+    }
+  };
+
+  function restartEnemiesLv2() {
+    allEnemies.forEach(function(enemy) {
+    enemy.newSpeddLv2();
+    enemy.bugArray = [ 3, 4, 5, 6, 7, 8 ];
+    enemy.newYpositionLv2();
+    return;
+  });
+  };
+
+  function bugPositionInNewMap() {
+    if(levelState === 'level 1') {
+      return boardGame[2][2].otherTileOn = bug;
+    } else {
+      return boardGame[2][1].otherTileOn = bug;
+    }
+  };
+
 Player.prototype.reachZoneAchiev = function() {
-  if ( playerState === 'hold bug' && boardGame[this.row][this.col].otherTileOn === selector ) {
+  if ( playerState === 'hold bug' && boardGame[this.row][this.col].otherTileOn === selector && levelState === 'level 1') {
     allEnemies.forEach(function(enemy) {
       enemy.speed = 0;
     });
@@ -268,41 +370,46 @@ Player.prototype.reachZoneAchiev = function() {
   };
 };
 
-var Heart = function(countHarts, x, y) {
+var Heart = function(countHearts, x, y) {
+  this.startingPositionX = x;
+  // this.startingPositiony = y;
+  this.startingCountHearts = countHearts;
   this.x = x;
   this.y = y;
-  this.countHarts = countHarts;
+  this.countHearts = countHearts;
   this.sprite = 'images/Heart.png';
 }
 
+Heart.prototype.restartPosition = function() {
+   this.x = this.startingPositionX;
+   // this.y = this.startingPositionY;
+   this.countHearts = this.startingCountHearts;
+   // console.log(this.startingCol);
+};
+
+Heart.prototype.drawHeart = function() {
+  if (this.countHearts >=1) {
+    ctx.drawImage(Resources.get(this.sprite), this.x + 90, this.y, 101*0.4, 171*0.4);
+  }
+  if(this.countHearts >=2) {
+    ctx.drawImage(Resources.get(this.sprite), this.x + 135, this.y, 101*0.4, 171*0.4);
+  }
+  if(this.countHearts >=3) {
+    ctx.drawImage(Resources.get(this.sprite), this.x + 180, this.y, 101*0.4, 171*0.4);
+  }
+};
 
 
 Heart.prototype.render = function() {
-  if (this.countHarts >=1) {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 101*0.4, 171*0.4);
-  }
-  if(this.countHarts >=2) {
-    ctx.drawImage(Resources.get(this.sprite), this.x + 45, this.y, 101*0.4, 171*0.4);
-  }
-  if(this.countHarts >=3) {
-    ctx.drawImage(Resources.get(this.sprite), this.x + 90, this.y, 101*0.4, 171*0.4);
-  }
+  this.drawHeart();
 };
+
 
 Heart.prototype.update = function(dt) {
 
 };
 
-// Heart.prototype.getCanvasY = function() {
-//   return this.row *83;
-// };
-//
-// Heart.prototype.getCanvasX = function() {
-//   return this.col *101;
-// };
-
-const heart = new Heart(3,0,70);
-// const heart2 = new Heart(45,70);
+let heart = new Heart(3,0,70);
 
 
 // Now instantiate your objects.
@@ -338,11 +445,14 @@ document.addEventListener('keyup', function(e) {
     }
   }
 
+
+    // if()
     if (gameState === 'game win') {
       if (allowedKeys[e.keyCode] === 'enter') {
         gameState = 'start game';
         playerState = 'no hold bug';
-        boardGame[2][2].otherTileOn = bug
+        // boardGame[2][2].otherTileOn = bug
+        bugPositionInNewMap();
         allEnemies.forEach(function(enemy) {
         enemy.x = enemy.ENEMY_STARTING_POSITION;
         return;
