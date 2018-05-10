@@ -63,7 +63,6 @@ var Engine = (function(global) {
    * game loop.
    */
   function init() {
-    reset();
     lastTime = Date.now();
     main();
   }
@@ -105,7 +104,11 @@ var Engine = (function(global) {
    * they are flipbooks creating the illusion of animation but in reality
    * they are just drawing the entire screen over and over.
    */
-  const startActive = function() {
+
+
+  // drawing functions
+
+  const startSelected = function() {
     ctx.shadowBlur = 0;
     ctx.fillStyle = '#c65353';
     ctx.fillRect(80, 420, 250, 40);
@@ -113,7 +116,6 @@ var Engine = (function(global) {
     ctx.textAlign = 'center';
     ctx.font = 'bold 30px Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif';
     ctx.fillText('START', 205, 450);
-
     ctx.fillStyle = '#c65353';
     ctx.fillRect(360, 420, 250, 40);
     ctx.fillStyle = '#fff';
@@ -122,7 +124,7 @@ var Engine = (function(global) {
     ctx.fillText('HELP', 490, 450);
   }
 
-  const menuActive = function() {
+  const helpSelected = function() {
     ctx.shadowBlur = 0;
     ctx.fillStyle = '#c65353';
     ctx.fillRect(80, 420, 250, 40);
@@ -130,7 +132,6 @@ var Engine = (function(global) {
     ctx.textAlign = 'center';
     ctx.font = 'bold 30px Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif';
     ctx.fillText('START', 205, 450);
-
     ctx.fillStyle = '#c65353';
     ctx.fillRect(360, 420, 250, 40);
     ctx.fillStyle = '#FF8345';
@@ -168,28 +169,38 @@ var Engine = (function(global) {
     ctx.stroke();
   }
 
-  function levelStyle(x) {
-
+  function levelStyle(levelText) {
+    ctx.fillStyle = '#000';
+    ctx.font = '27px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(levelText, 900, 110);
   }
 
+  function livesStyle() {
+    ctx.fillStyle = '#000';
+    ctx.font = '25px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('Lives:', 3, 110);
+  }
+
+  /* The drawImage function of the canvas' context element
+   * requires 3 parameters: the image to draw, the x coordinate
+   * to start drawing and the y coordinate to start drawing.
+   * We're using our Resources helpers to refer to our images
+   * so that we get the benefits of caching these images, since
+   * we're using them over and over.
+   */
+  // drawes tiles from boardGame level array
   const drawBoardGame = function(row, col) {
     let x = boardGame[row][col];
     if (x.tileType === TILE_WHITE) {
-      ctx.fillStyle = '#000';
-      ctx.font = '25px monospace';
-      ctx.textAlign = 'left';
+      livesStyle();
       ctx.fillText('Lives:', 3, 110);
-        if (levelState === LV_1) {
-          ctx.fillStyle = '#000';
-          ctx.font = '27px monospace';
-          ctx.textAlign = 'right';
-          ctx.fillText('Level 1', 900, 110);
-        } else {
-          ctx.fillStyle = '#000';
-          ctx.font = '27px monospace';
-          ctx.textAlign = 'right';
-          ctx.fillText('Level 2', 900, 110);
-        }
+      if (levelState === LV_1) {
+        levelStyle('Level 1');
+      } else {
+        levelStyle('Level 2');
+      }
     }
 
     if (x.tileType === TILE_WATER) {
@@ -265,18 +276,18 @@ var Engine = (function(global) {
     ctx.drawImage(Resources.get('images/arrow-down-key-on-keyboard.png'), 590, 615);
   }
 
+
   function render() {
-    /* This array holds the relative URL to the image used
-     * for that particular row of the game level.
-     */
+    // Before drawing, clear existing canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // handle drawing with game states
     if (gameState === GS_TITLE) {
       title();
 
       if (menu === 1) {
-        startActive();
+        startSelected();
       } else {
-        menuActive();
+        helpSelected();
       }
 
     } else if (gameState === GS_INSTRUCTIONS) {
@@ -290,7 +301,6 @@ var Engine = (function(global) {
         numCols = 9,
         row, col;
 
-      // Before drawing, clear existing canvas
 
       /* Loop through the number of rows and columns we've defined above
        * and, using the rowImages array, draw the correct image for that
@@ -298,13 +308,7 @@ var Engine = (function(global) {
        */
       for (row = 0; row < numRows; row++) {
         for (col = 0; col < numCols; col++) {
-          /* The drawImage function of the canvas' context element
-           * requires 3 parameters: the image to draw, the x coordinate
-           * to start drawing and the y coordinate to start drawing.
-           * We're using our Resources helpers to refer to our images
-           * so that we get the benefits of caching these images, since
-           * we're using them over and over.
-           */
+
           drawBoardGame(row, col);
         }
       }
@@ -330,15 +334,6 @@ var Engine = (function(global) {
     player.render();
 
   }
-
-  /* This function does nothing but it could have been a good place to
-   * handle game reset states - maybe a new game menu or a game over screen
-   * those sorts of things. It's only called once by the init() method.
-   */
-  function reset() {
-
-  }
-
   /* Go ahead and load all of the images we know we're going to need to
    * draw our game level. Then set init as the callback method, so that when
    * all of these images are properly loaded our game will start.

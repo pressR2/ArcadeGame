@@ -10,12 +10,8 @@ const GS_TITLE = 'gameTitle';
 const GS_INSTRUCTIONS = 'gameInstructions';
 const GS_START = 'gameStart';
 const GS_WIN = 'gameWin';
-let gameState = GS_WIN;
+let gameState = GS_TITLE;
 let menu = 1;
-
-const PS_HOLD_BUG = 'hold bug';
-const PS_NO_HOLD_BUG = 'no hold bug';
-let playerState = PS_NO_HOLD_BUG;
 
 const LV_1 = 'level 1';
 const LV_2 = 'level 2';
@@ -24,9 +20,9 @@ var levelEnd = false;
 
 let boardGame = [];
 const FREQUENCY = 100;
-let collision = false;
+let blinking = false;
 
-let Indextile = function(tileType, otherTileOn) {
+const Indextile = function(tileType, otherTileOn) {
   this.otherTileOn = otherTileOn;
   this.tileType = tileType;
 };
@@ -124,9 +120,9 @@ function fillArray2() {
   boardGame[8][3].otherTileOn = TILE_ROCK;
 };
 
-function blinkingPlayer() {
-  if (collision === true) {
-    collision = false;
+function stopBlinkingPlayer() {
+  if (blinking === true) {
+    blinking = false;
   }
 };
 
@@ -140,7 +136,6 @@ function changeStateGame() {
     levelEnd = false;
     levelState = LV_2;
     player.resetPosition();
-    playerState = PS_NO_HOLD_BUG;
     boardGame = [];
     fillArray2();
     restartEnemiesLv2();
@@ -149,9 +144,9 @@ function changeStateGame() {
 
 function restartEnemiesLv2() {
   allEnemies.forEach(function(enemy) {
-    enemy.drawingSpeed();
+    enemy.randomizeSpeed();
     enemy.bugArray = [3, 4, 5, 6, 7, 8];
-    enemy.yPosition();
+    enemy.randomizeRow();
     return;
   });
 };
@@ -161,36 +156,34 @@ function restartEnemiesLv2() {
          */
 
 var Enemy = function(sprite, row, speed) {
+  this.ENEMY_STARTING_POSITION = -200;
   this.x = this.ENEMY_STARTING_POSITION;
   this.speed = speed;
   this.sprite = sprite;
   this.row = row;
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
-
 Enemy.prototype.getCanvasY = function() {
   return this.row * 83 - 12;
 };
 
-Enemy.prototype.speddArray = [750, 350, 200, 1100, ];
+Enemy.prototype.speedArray = [750, 350, 200, 1100];
 
 Enemy.prototype.bugArray = [2, 3, 4, 6, 7];
 
-Enemy.prototype.ENEMY_STARTING_POSITION = -200;
-
-Enemy.prototype.drawingSpeed = function() {
+Enemy.prototype.randomizeSpeed = function() {
   this.x = this.ENEMY_STARTING_POSITION;
-  let randomEnemySpeedIndex = Math.floor(Math.random() * this.speddArray.length);
-  this.speed = this.speddArray[randomEnemySpeedIndex];
+  let randomEnemySpeedIndex = Math.floor(Math.random() * this.speedArray.length);
+  this.speed = this.speedArray[randomEnemySpeedIndex];
 };
 
-Enemy.prototype.yPosition = function() {
+Enemy.prototype.randomizeRow = function() {
   let randomBugIndex = Math.floor(Math.random() * this.bugArray.length);
   this.row = this.bugArray[randomBugIndex];
 };
 
+// Update the enemy's position, required method for game
+// Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
@@ -198,8 +191,8 @@ Enemy.prototype.update = function(dt) {
   if (this.x < ctx.canvas.width) {
     this.x += (this.speed * dt);
   } else {
-    this.drawingSpeed();
-    this.yPosition();
+    this.randomizeSpeed();
+    this.randomizeRow();
   }
   this.checkCollisions();
 };
@@ -209,18 +202,18 @@ Enemy.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.getCanvasY());
 };
 
+// Check when is collision and react properly
 Enemy.prototype.checkCollisions = function() {
   let rightSideCollision = this.x <= player.getCanvasX() && this.x + 60 >= player.getCanvasX()
   let leftSideCollision = this.x >= player.getCanvasX() && player.getCanvasX() + 60 >= this.x;
   let theSamePlayerEnemyRow = this.row === player.row;
 
-  if (collision === false && ((rightSideCollision || leftSideCollision) && theSamePlayerEnemyRow)) {
+  if (blinking === false && ((rightSideCollision || leftSideCollision) && theSamePlayerEnemyRow)) {
     heart.countHearts -= 1;
 
     if (heart.countHearts === 0) {
       player.resetPosition();
       heart.countHearts = 3;
-      playerState = PS_NO_HOLD_BUG;
       if (levelState === LV_1) {
         fillArray();
       } else if (levelState === LV_2) {
@@ -228,8 +221,8 @@ Enemy.prototype.checkCollisions = function() {
       }
 
     } else {
-      collision = true;
-      setTimeout(blinkingPlayer, 1200);
+      blinking = true;
+      setTimeout(stopBlinkingPlayer, 1200);
     }
   }
 };
@@ -254,6 +247,9 @@ var Player = function(col, row) {
   this.col = col;
   this.row = row;
   this.sprite = 'images/char-boy.png';
+  this.PS_HOLD_BUG = 'hold bug';
+  this.PS_NO_HOLD_BUG = 'no hold bug';
+  this.playerState = this.PS_NO_HOLD_BUG;
 };
 
 Player.prototype.getCanvasY = function() {
@@ -267,6 +263,7 @@ Player.prototype.getCanvasX = function() {
 Player.prototype.resetPosition = function() {
   this.col = this.startingCol;
   this.row = this.startingRow;
+  this.playerState = this.PS_NO_HOLD_BUG;
 };
 
 Player.prototype.update = function(dt) {
@@ -275,14 +272,14 @@ Player.prototype.update = function(dt) {
 
 Player.prototype.drawPlayer = function() {
   ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
-  if (playerState === PS_HOLD_BUG) {
+  if (this.playerState === this.PS_HOLD_BUG) {
     ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101 * 0.75, 171 * 0.75);
   }
 };
 
-// https://gamedev.stackexchange.com/questions/70116/how-do-i-make-a-sprite-blink-on-an-html5-canvas
+// function from https://gamedev.stackexchange.com/questions/70116/how-do-i-make-a-sprite-blink-on-an-html5-canvas
 Player.prototype.render = function() {
-  if (collision === true) {
+  if (blinking === true) {
     if (Math.floor(Date.now() / FREQUENCY) % 2) {
       this.drawPlayer();
     }
@@ -294,7 +291,7 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(direction) {
   const OLD_THIS_ROW = this.row;
   const OLD_THIS_COL = this.col;
-  const MOVE_CONDITIONS = boardGame[this.row][this.col].otherTileOn !== TILE_SELECTOR || playerState !== PS_HOLD_BUG;
+  const MOVE_CONDITIONS = boardGame[this.row][this.col].otherTileOn !== TILE_SELECTOR || this.playerState !== this.PS_HOLD_BUG;
 
   switch (direction) {
     case 'right':
@@ -326,13 +323,14 @@ Player.prototype.handleInput = function(direction) {
     this.col = OLD_THIS_COL;
   }
   if (boardGame[this.row][this.col].otherTileOn === TILE_BUG) {
-    playerState = PS_HOLD_BUG;
+    this.playerState = this.PS_HOLD_BUG;
     boardGame[this.row][this.col].otherTileOn = undefined;
   }
 };
 
+// determines when Player win level
 Player.prototype.reachZoneAchiev = function() {
-  if (levelEnd === false && (playerState === PS_HOLD_BUG && boardGame[this.row][this.col].otherTileOn === TILE_SELECTOR)) {
+  if (levelEnd === false && (this.playerState === this.PS_HOLD_BUG && boardGame[this.row][this.col].otherTileOn === TILE_SELECTOR)) {
     allEnemies.forEach(function(enemy) {
       enemy.speed = 0;
     });
@@ -381,11 +379,13 @@ document.addEventListener('keyup', function(e) {
   };
 
   player.handleInput(allowedKeys[e.keyCode]);
-  if (allowedKeys[e.keyCode] === 'right') {
-    menu = 0;
-  }
-  if (allowedKeys[e.keyCode] === 'left') {
-    menu = 1;
+  if (gameState === GS_TITLE) {
+    if (allowedKeys[e.keyCode] === 'right') {
+      menu = 0;
+    }
+    if (allowedKeys[e.keyCode] === 'left') {
+      menu = 1;
+    }
   }
   if (allowedKeys[e.keyCode] === 'enter') {
     if (gameState === GS_TITLE && menu === 1) {
@@ -401,12 +401,11 @@ document.addEventListener('keyup', function(e) {
       boardGame = [];
       fillArray();
       player.resetPosition();
-      playerState = PS_NO_HOLD_BUG;
       heart.countHearts = 3;
       allEnemies.forEach(function(enemy) {
-        enemy.drawingSpeed();
+        enemy.randomizeSpeed();
         enemy.bugArray = [2, 3, 4, 6, 7];
-        enemy.yPosition();
+        enemy.randomizeRow();
         return;
       });
     }
