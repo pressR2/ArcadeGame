@@ -1,205 +1,253 @@
-// Enemies our player must avoi
-// let winGame = false;
-// let gameState = 'gameTitle';
-// let gameState = 'instructions';
-// let gameState = 'game win';
-let gameState = 'game introduce';
-const stone = 'tileStone';
-const water = 'tileWater';
-const grass = 'tileGrass';
-const rock = 'tileRock';
-const selector = 'tileSelector';
-const bug = 'tileBug';
-const white = 'tileWhite';
-// const heart = 'tileHeart';
+const TILE_STONE = 'tileStone';
+const TILE_WATER = 'tileWater';
+const TILE_GRASS = 'tileGrass';
+const TILE_ROCK = 'tileRock';
+const TILE_SELECTOR = 'tileSelector';
+const TILE_BUG = 'tileBug';
+const TILE_WHITE = 'tileWhite';
+
+const GS_TITLE = 'gameTitle';
+const GS_INSTRUCTIONS = 'gameInstructions';
+const GS_START = 'gameStart';
+const GS_WIN = 'gameWin';
+let gameState = GS_WIN;
+let menu = 1;
+
+const PS_HOLD_BUG = 'hold bug';
+const PS_NO_HOLD_BUG = 'no hold bug';
+let playerState = PS_NO_HOLD_BUG;
+
+const LV_1 = 'level 1';
+const LV_2 = 'level 2';
+let levelState = LV_1;
+var levelEnd = false;
 
 let boardGame = [];
- var Indextile = function(tileType, otherTileOn){
-   this.otherTileOn = otherTileOn;
-   this.tileType = tileType;
- }
+const FREQUENCY = 100;
+let collision = false;
+
+let Indextile = function(tileType, otherTileOn) {
+  this.otherTileOn = otherTileOn;
+  this.tileType = tileType;
+};
+
+fillArray();
 
 function fillArray() {
-  rowAmount = 10;
-  colAmount = 9
-  for(let row = 0; row < rowAmount; row ++) {
+  let rowAmount = 10;
+  let colAmount = 9;
+
+  for (let row = 0; row < rowAmount; row++) {
     let rowTable = [];
-    for(let col = 0; col < colAmount; col++) {
-      if([0].includes(row)) {
-        rowTable.push(new Indextile(white))
+    for (let col = 0; col < colAmount; col++) {
+      if ([0].includes(row)) {
+        rowTable.push(new Indextile(TILE_WHITE))
       }
-      if([1, 5].includes(row)) {
-        rowTable.push(new Indextile(water));
-    }
-      if([2, 3, 4, 6, 7].includes(row)) {
-        rowTable.push(new Indextile(stone));
+      if ([1, 5].includes(row)) {
+        rowTable.push(new Indextile(TILE_WATER));
       }
-      if([8, 9].includes(row)) {
-        rowTable.push(new Indextile(grass));
+      if ([2, 3, 4, 6, 7].includes(row)) {
+        rowTable.push(new Indextile(TILE_STONE));
+      }
+      if ([8, 9].includes(row)) {
+        rowTable.push(new Indextile(TILE_GRASS));
       }
     }
     boardGame.push(rowTable);
   }
-  boardGame[5][3] = new Indextile(stone);
-  boardGame[7][3].otherTileOn = rock;
-  boardGame[3][3].otherTileOn = rock;
-  boardGame[4][5].otherTileOn = rock;
-  boardGame[2][7].otherTileOn = selector;
-  boardGame[2][2].otherTileOn = bug;
-  boardGame[2][4].otherTileOn = rock;
+  boardGame[5][3] = new Indextile(TILE_STONE);
+  boardGame[2][7].otherTileOn = TILE_SELECTOR;
+  boardGame[2][2].otherTileOn = TILE_BUG;
+  boardGame[7][3].otherTileOn = TILE_ROCK;
+  boardGame[3][3].otherTileOn = TILE_ROCK;
+  boardGame[4][5].otherTileOn = TILE_ROCK;
+  boardGame[2][4].otherTileOn = TILE_ROCK;
 }
-fillArray();
 
 function fillArray2() {
-  rowAmount = 10;
-  colAmount = 9
-  for(let row = 0; row < rowAmount; row ++) {
-    let rowTable2 = [];
-    for(let col = 0; col < colAmount; col++) {
-      if([0].includes(row)) {
-        rowTable2.push(new Indextile(white))
+  let rowAmount = 10;
+  let colAmount = 9;
+  for (let row = 0; row < rowAmount; row++) {
+    let rowTable = [];
+    for (let col = 0; col < colAmount; col++) {
+      if ([0].includes(row)) {
+        rowTable.push(new Indextile(TILE_WHITE))
       }
-      if([1, 2].includes(row)) {
-        rowTable2.push(new Indextile(water));
+      if ([1, 2].includes(row)) {
+        rowTable.push(new Indextile(TILE_WATER));
+      }
+      if ([4, 5, 6, 7, 8].includes(row)) {
+        rowTable.push(new Indextile(TILE_GRASS));
+      }
+      if ([3, 9].includes(row)) {
+        rowTable.push(new Indextile(TILE_STONE));
+      }
     }
-      if([4, 5, 6, 7, 8].includes(row)) {
-        rowTable2.push(new Indextile(grass));
-      }
-      if([3, 9].includes(row)) {
-        rowTable2.push(new Indextile(stone));
-      }
-    }
-    boardGame.push(rowTable2);
+    boardGame.push(rowTable);
   }
-  boardGame[2][1] = new Indextile(stone);
-  boardGame[2][5] = new Indextile(stone);
-  // boardGame[2][7] = new Indextile(stone);
-  boardGame[8][5].otherTileOn = rock;
-  boardGame[8][6].otherTileOn = rock;
-  boardGame[8][8].otherTileOn = rock;
-  boardGame[6][8].otherTileOn = rock;
-  boardGame[6][6].otherTileOn = rock;
-  boardGame[6][7].otherTileOn = rock;
-  boardGame[5][8].otherTileOn = rock;
-  boardGame[7][8].otherTileOn = rock;
-  boardGame[4][8].otherTileOn = rock;
+  boardGame[2][1] = new Indextile(TILE_STONE);
+  boardGame[2][5] = new Indextile(TILE_STONE);
+  boardGame[6][3].otherTileOn = TILE_SELECTOR;
+  boardGame[2][1].otherTileOn = TILE_BUG;
 
-  boardGame[4][5].otherTileOn = rock;
-  boardGame[4][6].otherTileOn = rock;
-  boardGame[4][8].otherTileOn = rock;
-  boardGame[6][3].otherTileOn = selector;
-  boardGame[2][1].otherTileOn = bug;
-  boardGame[3][8].otherTileOn = rock;
-
-  boardGame[4][4].otherTileOn = rock;
-  boardGame[5][4].otherTileOn = rock;
-  boardGame[6][4].otherTileOn = rock;
-  boardGame[7][4].otherTileOn = rock;
-  boardGame[8][4].otherTileOn = rock;
-
-  boardGame[8][0].otherTileOn = rock;
-  boardGame[8][1].otherTileOn = rock;
-  boardGame[8][2].otherTileOn = rock;
-
-  boardGame[4][0].otherTileOn = rock;
-  boardGame[5][0].otherTileOn = rock;
-  boardGame[6][0].otherTileOn = rock;
-  boardGame[7][0].otherTileOn = rock;
-  boardGame[8][0].otherTileOn = rock;
-  boardGame[4][3].otherTileOn = rock;
-  boardGame[4][1].otherTileOn = rock;
-  boardGame[5][3].otherTileOn = rock;
-  boardGame[6][2].otherTileOn = rock;
-  boardGame[3][0].otherTileOn = rock;
-  boardGame[8][3].otherTileOn = rock;
-
-  // boardGame[0][4].otherTileOn = heart;
-  // boardGame[2][4].otherTileOn = heart;
+  boardGame[8][5].otherTileOn = TILE_ROCK;
+  boardGame[8][6].otherTileOn = TILE_ROCK;
+  boardGame[8][8].otherTileOn = TILE_ROCK;
+  boardGame[6][8].otherTileOn = TILE_ROCK;
+  boardGame[6][6].otherTileOn = TILE_ROCK;
+  boardGame[6][7].otherTileOn = TILE_ROCK;
+  boardGame[5][8].otherTileOn = TILE_ROCK;
+  boardGame[7][8].otherTileOn = TILE_ROCK;
+  boardGame[4][8].otherTileOn = TILE_ROCK;
+  boardGame[4][5].otherTileOn = TILE_ROCK;
+  boardGame[4][6].otherTileOn = TILE_ROCK;
+  boardGame[4][8].otherTileOn = TILE_ROCK;
+  boardGame[3][8].otherTileOn = TILE_ROCK;
+  boardGame[4][4].otherTileOn = TILE_ROCK;
+  boardGame[5][4].otherTileOn = TILE_ROCK;
+  boardGame[6][4].otherTileOn = TILE_ROCK;
+  boardGame[7][4].otherTileOn = TILE_ROCK;
+  boardGame[8][4].otherTileOn = TILE_ROCK;
+  boardGame[8][0].otherTileOn = TILE_ROCK;
+  boardGame[8][1].otherTileOn = TILE_ROCK;
+  boardGame[8][2].otherTileOn = TILE_ROCK;
+  boardGame[4][0].otherTileOn = TILE_ROCK;
+  boardGame[5][0].otherTileOn = TILE_ROCK;
+  boardGame[6][0].otherTileOn = TILE_ROCK;
+  boardGame[7][0].otherTileOn = TILE_ROCK;
+  boardGame[8][0].otherTileOn = TILE_ROCK;
+  boardGame[4][3].otherTileOn = TILE_ROCK;
+  boardGame[4][1].otherTileOn = TILE_ROCK;
+  boardGame[5][3].otherTileOn = TILE_ROCK;
+  boardGame[6][2].otherTileOn = TILE_ROCK;
+  boardGame[3][0].otherTileOn = TILE_ROCK;
+  boardGame[8][3].otherTileOn = TILE_ROCK;
 };
 
-var Enemy = function(sprite,row, speed) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+function blinkingPlayer() {
+  if (collision === true) {
+    collision = false;
+  }
+};
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.x = this.ENEMY_STARTING_POSITION;
-    this.speed = speed;
-    this.sprite = sprite;
-    this.row = row;
-    // this.collision = false;
+function changeStateGame() {
+  if (levelState === LV_2) {
+    gameState = GS_WIN;
+    levelEnd = false;
+    levelState = LV_1;
+  }
+  if (levelState === LV_1 && levelEnd === true) {
+    levelEnd = false;
+    levelState = LV_2;
+    player.resetPosition();
+    playerState = PS_NO_HOLD_BUG;
+    boardGame = [];
+    fillArray2();
+    restartEnemiesLv2();
+  }
+};
+
+function restartEnemiesLv2() {
+  allEnemies.forEach(function(enemy) {
+    enemy.drawingSpeed();
+    enemy.bugArray = [3, 4, 5, 6, 7, 8];
+    enemy.yPosition();
+    return;
+  });
+};
+
+/*
+   ENEMY
+         */
+
+var Enemy = function(sprite, row, speed) {
+  this.x = this.ENEMY_STARTING_POSITION;
+  this.speed = speed;
+  this.sprite = sprite;
+  this.row = row;
 };
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
-Enemy.prototype.speddArray = [ 240, 380, 140, 500 ];
-// Enemy.prototype.speddArray = [ 140, 140, 140, 140 ];
+
 Enemy.prototype.getCanvasY = function() {
-    return this.row *83 - 12;
-}
+  return this.row * 83 - 12;
+};
 
-Enemy.prototype.bugArray = [ 2, 3, 4, 6, 7 ];
+Enemy.prototype.speddArray = [750, 350, 200, 1100, ];
 
+Enemy.prototype.bugArray = [2, 3, 4, 6, 7];
 
 Enemy.prototype.ENEMY_STARTING_POSITION = -200;
 
-Enemy.prototype.newSpeddLv2 = function() {
+Enemy.prototype.drawingSpeed = function() {
   this.x = this.ENEMY_STARTING_POSITION;
-    var speddArrayLength = this.speddArray.length;
-    let randomIndex = Math.floor(Math.random() * speddArrayLength);
-  this.speed = this.speddArray[randomIndex];
+  let randomEnemySpeedIndex = Math.floor(Math.random() * this.speddArray.length);
+  this.speed = this.speddArray[randomEnemySpeedIndex];
 };
 
-Enemy.prototype.newYpositionLv2 = function() {
-  var startIndexBugArray = this.bugArray.length, randomBugIndex;
-   randomBugIndex = Math.floor(Math.random() * startIndexBugArray);
+Enemy.prototype.yPosition = function() {
+  let randomBugIndex = Math.floor(Math.random() * this.bugArray.length);
   this.row = this.bugArray[randomBugIndex];
 };
 
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
-    if (this.x < ctx.canvas.width) {
-      this.x += (this.speed * dt);
-    } else {
-      this.newSpeddLv2();
-
-      this.newYpositionLv2();
-    }
-    this.checkCollisions();
-    // console.log(this.y);
-  };
-    // console.log(this.y);
+  // You should multiply any movement by the dt parameter
+  // which will ensure the game runs at the same speed for
+  // all computers.
+  if (this.x < ctx.canvas.width) {
+    this.x += (this.speed * dt);
+  } else {
+    this.drawingSpeed();
+    this.yPosition();
+  }
+  this.checkCollisions();
+};
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.getCanvasY());
+  ctx.drawImage(Resources.get(this.sprite), this.x, this.getCanvasY());
 };
 
 Enemy.prototype.checkCollisions = function() {
+  let rightSideCollision = this.x <= player.getCanvasX() && this.x + 60 >= player.getCanvasX()
+  let leftSideCollision = this.x >= player.getCanvasX() && player.getCanvasX() + 60 >= this.x;
+  let theSamePlayerEnemyRow = this.row === player.row;
 
-   if (collision === false &&((this.x <= player.getCanvasX() && this.x + 60 >= player.getCanvasX() ||
-       this.x >= player.getCanvasX() && player.getCanvasX() + 60 >= this.x)
-       && this.row === player.row)) {
-     // this.speed = 0;
-    // var collision = true;
-    //  console.log(this.collision);
-    // player.resetPosition();
-    collision = true;
-    setTimeout(blinkingPlayer, 1200);
+  if (collision === false && ((rightSideCollision || leftSideCollision) && theSamePlayerEnemyRow)) {
     heart.countHearts -= 1;
-    if(heart.countHearts === 0) {
+
+    if (heart.countHearts === 0) {
       player.resetPosition();
-      heart.restartPosition();
-      playerState = 'no hold bug';
-      bugPositionInNewMap();
+      heart.countHearts = 3;
+      playerState = PS_NO_HOLD_BUG;
+      if (levelState === LV_1) {
+        fillArray();
+      } else if (levelState === LV_2) {
+        fillArray2();
+      }
+
+    } else {
+      collision = true;
+      setTimeout(blinkingPlayer, 1200);
     }
   }
 };
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+
+let allEnemies = [
+  new Enemy('images/char-cat-girl.png'),
+  new Enemy('images/char-horn-girl.png'),
+  new Enemy('images/char-pink-girl.png'),
+  new Enemy('images/char-princess-girl.png'),
+  new Enemy('images/char-horn-girl.png'),
+  new Enemy('images/char-cat-girl.png'),
+  new Enemy('images/char-princess-girl.png'),
+];
+
+/*
+   PLAYER
+           */
+
 var Player = function(col, row) {
   this.startingRow = row
   this.startingCol = col;
@@ -208,283 +256,159 @@ var Player = function(col, row) {
   this.sprite = 'images/char-boy.png';
 };
 
-Player.prototype.resetPosition = function() {
-   this.col = this.startingCol;
-   this.row = this.startingRow;
+Player.prototype.getCanvasY = function() {
+  return this.row * 83 - 15;
+};
 
+Player.prototype.getCanvasX = function() {
+  return this.col * 101;
+};
+
+Player.prototype.resetPosition = function() {
+  this.col = this.startingCol;
+  this.row = this.startingRow;
 };
 
 Player.prototype.update = function(dt) {
   this.reachZoneAchiev();
 };
 
-var frequency = 100;
-let collision = false;
-let playerState = 'no hold bug';
-let levelState = 'level 1';
-Player.prototype.render = function() {
-  if(collision === true) {
-  // https://gamedev.stackexchange.com/questions/70116/how-do-i-make-a-sprite-blink-on-an-html5-canvas
-
-    if (Math.floor(Date.now() / frequency) % 2) {
-      ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
-      if(playerState === 'hold bug') {
-
-          ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
-
-      }
-    }
-
-
-  } else {
-    ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
-    if(playerState === 'hold bug') {
-
-        ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101*0.75, 171*0.75);
-
-    }
+Player.prototype.drawPlayer = function() {
+  ctx.drawImage(Resources.get(this.sprite), this.getCanvasX(), this.getCanvasY());
+  if (playerState === PS_HOLD_BUG) {
+    ctx.drawImage(Resources.get('images/enemy-bug.png'), this.getCanvasX() + 14, this.getCanvasY() - 30, 101 * 0.75, 171 * 0.75);
   }
-
 };
 
-Player.prototype.getCanvasY = function() {
-  return this.row *83 -15;
-};
-
-Player.prototype.getCanvasX = function() {
-  return this.col *101;
+// https://gamedev.stackexchange.com/questions/70116/how-do-i-make-a-sprite-blink-on-an-html5-canvas
+Player.prototype.render = function() {
+  if (collision === true) {
+    if (Math.floor(Date.now() / FREQUENCY) % 2) {
+      this.drawPlayer();
+    }
+  } else {
+    this.drawPlayer();
+  }
 };
 
 Player.prototype.handleInput = function(direction) {
-switch (direction) {
-  case 'right':
-    if (this.col <= 7 && (boardGame[this.row][this.col].otherTileOn !== selector || playerState !== 'hold bug')) {
-      this.col += 1;
+  const OLD_THIS_ROW = this.row;
+  const OLD_THIS_COL = this.col;
+  const MOVE_CONDITIONS = boardGame[this.row][this.col].otherTileOn !== TILE_SELECTOR || playerState !== PS_HOLD_BUG;
 
-      if (boardGame[this.row][this.col].otherTileOn === rock ||
-        boardGame[this.row][this.col].tileType === water) {
-        this.col -= 1;
-      }
-        if(boardGame[this.row][this.col].otherTileOn === bug) {
-          playerState = 'hold bug';
-          boardGame[this.row][this.col].otherTileOn = undefined;
-        }
-      }
-
-    break;
-    case 'left':
-      if (this.col >= 1 && (boardGame[this.row][this.col].otherTileOn !== selector || playerState !== 'hold bug')) {
-        this.col -= 1;
-        if (boardGame[this.row][this.col].otherTileOn === rock ||
-          boardGame[this.row][this.col].tileType === water) {
-          this.col +=1;
-        }
-        if(boardGame[this.row][this.col].otherTileOn === bug) {
-          playerState = 'hold bug';
-          boardGame[this.row][this.col].otherTileOn = undefined;
-        }
-    }
-    break;
-    case 'up':
-      if (this.row >= 1 && (boardGame[this.row][this.col].otherTileOn !== selector || playerState !== 'hold bug')) {
-      this.row -= 1;
-      if (boardGame[this.row][this.col].otherTileOn === rock ||
-        boardGame[this.row][this.col].tileType === water) {
-        this.row +=1;
-      }
-      if(boardGame[this.row][this.col].otherTileOn === bug) {
-        playerState = 'hold bug';
-        boardGame[this.row][this.col].otherTileOn = undefined;
-      }
-    }
-    break;
-    case 'down':
-      if (this.row <= 8 && (boardGame[this.row][this.col].otherTileOn !== selector || playerState !== 'hold bug')) {
-        this.row += 1;
-        if (boardGame[this.row][this.col].otherTileOn === rock ||
-          boardGame[this.row][this.col].tileType === water) {
-          this.row -=1;
-        }
-        if(boardGame[this.row][this.col].otherTileOn === bug) {
-          playerState = 'hold bug';
-          boardGame[this.row][this.col].otherTileOn = undefined;
-        }
+  switch (direction) {
+    case 'right':
+      if (this.col <= 7 && MOVE_CONDITIONS) {
+        this.col += 1;
       }
       break;
-}
 
-// console.log(this.row);
-// console.log(this.col);
-};
-function blinkingPlayer(){
-  if(collision === true) {
-    collision = false;
+    case 'left':
+      if (this.col >= 1 && MOVE_CONDITIONS) {
+        this.col -= 1;
+      }
+      break;
+    case 'up':
+      if (this.row >= 1 && MOVE_CONDITIONS) {
+        this.row -= 1;
+      }
+      break;
+    case 'down':
+      if (this.row <= 8 && MOVE_CONDITIONS) {
+        this.row += 1;
+      }
+      break;
+  }
+
+  if (boardGame[this.row][this.col].otherTileOn === TILE_ROCK ||
+    boardGame[this.row][this.col].tileType === TILE_WATER) {
+    this.row = OLD_THIS_ROW;
+    this.col = OLD_THIS_COL;
+  }
+  if (boardGame[this.row][this.col].otherTileOn === TILE_BUG) {
+    playerState = PS_HOLD_BUG;
+    boardGame[this.row][this.col].otherTileOn = undefined;
   }
 };
 
-
-
-function changeStateGame() {
-  if (levelState === 'level 2') {
-    gameState = 'game win';
-    levelEnd = false;
-    levelState = 'level 1';
-  }
-  // gameState = 'ga win';
-  if(levelState === 'level 1' && levelEnd === true){
-    levelEnd = false;
-  levelState = 'level 2';
-  player.resetPosition();
-  playerState = 'no hold bug';
-  boardGame = [];
-  fillArray2();
-  restartEnemiesLv2();
-  ChangeReachZoneXY();
-  bugPositionInNewMap();
-}
-};
-
-function ChangeReachZoneXY() {
-  if(levelState === 'level 1') {
-      return boardGame[2][7].otherTileOn = selector;
-    } else {
-      return boardGame[6][3].otherTileOn = selector;
-    }
-  };
-
-  function restartEnemiesLv2() {
-    allEnemies.forEach(function(enemy) {
-    enemy.newSpeddLv2();
-    enemy.bugArray = [ 3, 4, 5, 6, 7, 8 ];
-    enemy.newYpositionLv2();
-    return;
-  });
-  };
-
-  function bugPositionInNewMap() {
-    if(levelState === 'level 1') {
-      return boardGame[2][2].otherTileOn = bug;
-    } else {
-      return boardGame[2][1].otherTileOn = bug;
-    }
-  };
-var levelEnd = false;
 Player.prototype.reachZoneAchiev = function() {
-  if (levelEnd === false && (playerState === 'hold bug' && boardGame[this.row][this.col].otherTileOn === selector)) {
+  if (levelEnd === false && (playerState === PS_HOLD_BUG && boardGame[this.row][this.col].otherTileOn === TILE_SELECTOR)) {
     allEnemies.forEach(function(enemy) {
       enemy.speed = 0;
     });
     levelEnd = true;
     setTimeout(changeStateGame, 500);
-    // console.log(winGame);
   };
 };
 
-var Heart = function(countHearts, x, y) {
-  this.startingPositionX = x;
-  // this.startingPositiony = y;
-  this.startingCountHearts = countHearts;
-  this.x = x;
-  this.y = y;
-  this.countHearts = countHearts;
-  this.sprite = 'images/Heart.png';
-}
-
-Heart.prototype.restartPosition = function() {
-   this.x = this.startingPositionX;
-   // this.y = this.startingPositionY;
-   this.countHearts = this.startingCountHearts;
-   // console.log(this.startingCol);
-};
-
-Heart.prototype.drawHeart = function() {
-  if (this.countHearts >=1) {
-    ctx.drawImage(Resources.get(this.sprite), this.x + 90, this.y, 101*0.4, 171*0.4);
-  }
-  if(this.countHearts >=2) {
-    ctx.drawImage(Resources.get(this.sprite), this.x + 135, this.y, 101*0.4, 171*0.4);
-  }
-  if(this.countHearts >=3) {
-    ctx.drawImage(Resources.get(this.sprite), this.x + 180, this.y, 101*0.4, 171*0.4);
-  }
-};
-
-
-Heart.prototype.render = function() {
-  this.drawHeart();
-};
-
-
-Heart.prototype.update = function(dt) {
-
-};
-
-let heart = new Heart(3,0,70);
-
-
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-let allEnemies = [
-                  new Enemy('images/char-cat-girl.png'),
-                  new Enemy('images/char-horn-girl.png'),
-                  new Enemy('images/char-pink-girl.png'),
-                  new Enemy('images/char-princess-girl.png')
-                ];
-
 let player = new Player(4, 9);
 
+/*
+   HEART
+         */
+
+var Heart = function(countHearts, x, y, distance = 40) {
+  this.x = x;
+  this.y = y;
+  this.distance = distance;
+  this.countHearts = countHearts;
+  this.sprite = 'images/Heart.png';
+};
+
+Heart.prototype.drawHeart = function(x) {
+  ctx.drawImage(Resources.get(this.sprite), x, this.y, 101 * 0.4, 171 * 0.4);
+
+};
+
+Heart.prototype.render = function() {
+  for (i = 0; i < this.countHearts; i++) {
+    this.drawHeart(this.x + i * this.distance);
+  }
+};
+
+let heart = new Heart(3, 90, 70);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
 
-    var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down',
-        13: 'enter'
-    };
+  var allowedKeys = {
+    37: 'left',
+    38: 'up',
+    39: 'right',
+    40: 'down',
+    13: 'enter'
+  };
 
-    player.handleInput(allowedKeys[e.keyCode]);
-
-    if (gameState === 'game introduce') {
-      if(allowedKeys[e.keyCode] === 'enter') {
-      // gameState = 'start game';
-      gameState = 'gameTitle';
-    }
-  } else if(gameState === 'gameTitle') {
-    if(allowedKeys[e.keyCode] === 'enter') {
-    gameState = 'instructions';
+  player.handleInput(allowedKeys[e.keyCode]);
+  if (allowedKeys[e.keyCode] === 'right') {
+    menu = 0;
   }
-} else if (gameState === 'instructions') {
-  if(allowedKeys[e.keyCode] === 'enter') {
-  gameState = 'start game';
-}
-}
-// if (levelState === 'level 2') {
-//   gameState = 'start game';
-// }
-
-
-    if (gameState === 'game win') {
-      if (allowedKeys[e.keyCode] === 'enter') {
-        levelState = 'level 1';
-        boardGame = [];
-        fillArray();
-        gameState = 'start game';
-        player.resetPosition();
-        playerState = 'no hold bug';
-        bugPositionInNewMap();
-        heart.restartPosition();
-        allEnemies.forEach(function(enemy) {
-          enemy.newSpeddLv2();
-          enemy.bugArray = [ 2, 3, 4, 6, 7 ];
-          enemy.newYpositionLv2();
-          return;
+  if (allowedKeys[e.keyCode] === 'left') {
+    menu = 1;
+  }
+  if (allowedKeys[e.keyCode] === 'enter') {
+    if (gameState === GS_TITLE && menu === 1) {
+      gameState = GS_START;
+    } else if (gameState === GS_TITLE && menu !== 1) {
+      gameState = GS_INSTRUCTIONS;
+    } else if (gameState === GS_INSTRUCTIONS) {
+      gameState = GS_TITLE;
+    }
+    if (gameState === GS_WIN) {
+      gameState = GS_TITLE;
+      levelState = LV_1;
+      boardGame = [];
+      fillArray();
+      player.resetPosition();
+      playerState = PS_NO_HOLD_BUG;
+      heart.countHearts = 3;
+      allEnemies.forEach(function(enemy) {
+        enemy.drawingSpeed();
+        enemy.bugArray = [2, 3, 4, 6, 7];
+        enemy.yPosition();
+        return;
       });
-
     }
-    }
+  }
 });
