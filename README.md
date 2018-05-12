@@ -11,7 +11,7 @@
 * The enemies move in varying speeds on the scene.
 ### Lives
 * Once the player collides with an enemy, the number of hearts will go down by one till last one disappear. The game will reset and the player moves back to the start square.
-### How to run the game
+## How to run the game
 * Download the zip file from https://github.com/pressR2/ArcadeGame
 Extract all files and load index.html in your favorite browser.
 
