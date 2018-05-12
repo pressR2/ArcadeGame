@@ -1,3 +1,5 @@
+'use strict';
+
 const TILE_STONE = 'tileStone';
 const TILE_WATER = 'tileWater';
 const TILE_GRASS = 'tileGrass';
@@ -37,7 +39,7 @@ function fillArray() {
     let rowTable = [];
     for (let col = 0; col < colAmount; col++) {
       if ([0].includes(row)) {
-        rowTable.push(new Indextile(TILE_WHITE))
+        rowTable.push(new Indextile(TILE_WHITE));
       }
       if ([1, 5].includes(row)) {
         rowTable.push(new Indextile(TILE_WATER));
@@ -67,7 +69,7 @@ function fillArray2() {
     let rowTable = [];
     for (let col = 0; col < colAmount; col++) {
       if ([0].includes(row)) {
-        rowTable.push(new Indextile(TILE_WHITE))
+        rowTable.push(new Indextile(TILE_WHITE));
       }
       if ([1, 2].includes(row)) {
         rowTable.push(new Indextile(TILE_WATER));
@@ -118,13 +120,13 @@ function fillArray2() {
   boardGame[6][2].otherTileOn = TILE_ROCK;
   boardGame[3][0].otherTileOn = TILE_ROCK;
   boardGame[8][3].otherTileOn = TILE_ROCK;
-};
+}
 
 function stopBlinkingPlayer() {
   if (blinking === true) {
     blinking = false;
   }
-};
+}
 
 function changeStateGame() {
   if (levelState === LV_2) {
@@ -140,7 +142,7 @@ function changeStateGame() {
     fillArray2();
     restartEnemiesLv2();
   }
-};
+}
 
 function restartEnemiesLv2() {
   allEnemies.forEach(function(enemy) {
@@ -149,7 +151,7 @@ function restartEnemiesLv2() {
     enemy.randomizeRow();
     return;
   });
-};
+}
 
 /*
    ENEMY
@@ -167,7 +169,7 @@ Enemy.prototype.getCanvasY = function() {
   return this.row * 83 - 12;
 };
 
-Enemy.prototype.speedArray = [750, 350, 200, 1100];
+Enemy.prototype.speedArray = [650, 350, 200, 1000];
 
 Enemy.prototype.bugArray = [2, 3, 4, 6, 7];
 
@@ -204,7 +206,7 @@ Enemy.prototype.render = function() {
 
 // Check when is collision and react properly
 Enemy.prototype.checkCollisions = function() {
-  let rightSideCollision = this.x <= player.getCanvasX() && this.x + 60 >= player.getCanvasX()
+  let rightSideCollision = this.x <= player.getCanvasX() && this.x + 60 >= player.getCanvasX();
   let leftSideCollision = this.x >= player.getCanvasX() && player.getCanvasX() + 60 >= this.x;
   let theSamePlayerEnemyRow = this.row === player.row;
 
@@ -242,7 +244,7 @@ let allEnemies = [
            */
 
 var Player = function(col, row) {
-  this.startingRow = row
+  this.startingRow = row;
   this.startingCol = col;
   this.col = col;
   this.row = row;
@@ -336,7 +338,7 @@ Player.prototype.reachZoneAchiev = function() {
     });
     levelEnd = true;
     setTimeout(changeStateGame, 500);
-  };
+  }
 };
 
 let player = new Player(4, 9);
@@ -359,7 +361,7 @@ Heart.prototype.drawHeart = function(x) {
 };
 
 Heart.prototype.render = function() {
-  for (i = 0; i < this.countHearts; i++) {
+  for (let i = 0; i < this.countHearts; i++) {
     this.drawHeart(this.x + i * this.distance);
   }
 };
