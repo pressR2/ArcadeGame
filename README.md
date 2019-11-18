@@ -14,5 +14,7 @@
 ## How to run the game
 * Download the zip file from https://github.com/pressR2/ArcadeGame
 Extract all files and load index.html in your favorite browser.
+## Source
+Initial code by Udacity [link](https://github.com/udacity/frontend-nanodegree-arcade-game).
 
 Icon keyboard moves made by [Freepik] from www.flaticon.com
