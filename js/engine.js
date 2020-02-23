@@ -155,7 +155,7 @@ var Engine = (function(global) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 10;
-    ctx.fillStyle = '#d6d6c2';
+    ctx.fillStyle = '#D6D6C2';
     ctx.fillRect(12, 12, canvas.width - 24, canvas.height - 24);
   }
 
@@ -272,10 +272,10 @@ var Engine = (function(global) {
     ctx.fillRect(30, 610, 230, 70);
     ctx.fillStyle = '#fff';
     ctx.fillText('MOVES', 195, 660);
-    ctx.drawImage(Resources.get('images/keyboard-key-pointing-to-right.png'), 320, 615);
-    ctx.drawImage(Resources.get('images/left-arrow-variant-key-on-keyboard.png'), 410, 615);
-    ctx.drawImage(Resources.get('images/keyboard-key-arrow-up.png'), 500, 615);
-    ctx.drawImage(Resources.get('images/arrow-down-key-on-keyboard.png'), 590, 615);
+    ctx.drawImage(Resources.get('images/left-arrow-variant-key-on-keyboard.png'), 320, 615);
+    ctx.drawImage(Resources.get('images/keyboard-key-arrow-up.png'), 410, 615);
+    ctx.drawImage(Resources.get('images/arrow-down-key-on-keyboard.png'), 500, 615);
+    ctx.drawImage(Resources.get('images/keyboard-key-pointing-to-right.png'), 590, 615);
   }
 
 
