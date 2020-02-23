@@ -1,4 +1,5 @@
 # Classic Arcade Game Clone
+![my screenshot](images/Untitled7.PNG "Game screen")
 ## About the game
 In this game, you have a hero, a bug, enemies, and obstacles. The goal of the hero is to reach the star square while holding the bug.
 Once the star square is reached the game progresses to level 2 which is the last level of the game.
