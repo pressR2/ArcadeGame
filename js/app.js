@@ -1,22 +1,22 @@
 'use strict';
 
-const TILE_STONE = 'tileStone';
-const TILE_WATER = 'tileWater';
-const TILE_GRASS = 'tileGrass';
-const TILE_ROCK = 'tileRock';
-const TILE_SELECTOR = 'tileSelector';
-const TILE_BUG = 'tileBug';
-const TILE_WHITE = 'tileWhite';
+const TILE_STONE = 'tileStone',
+      TILE_WATER = 'tileWater',
+      TILE_GRASS = 'tileGrass',
+      TILE_ROCK = 'tileRock',
+      TILE_SELECTOR = 'tileSelector',
+      TILE_BUG = 'tileBug',
+      TILE_WHITE = 'tileWhite',
 
-const GS_TITLE = 'gameTitle';
-const GS_INSTRUCTIONS = 'gameInstructions';
-const GS_START = 'gameStart';
-const GS_WIN = 'gameWin';
+      GS_TITLE = 'gameTitle',
+      GS_INSTRUCTIONS = 'gameInstructions',
+      GS_START = 'gameStart',
+      GS_WIN = 'gameWin';
 let gameState = GS_TITLE;
 let menu = 1;
 
-const LV_1 = 'level 1';
-const LV_2 = 'level 2';
+const LV_1 = 'level 1',
+      LV_2 = 'level 2';
 let levelState = LV_1;
 var levelEnd = false;
 
@@ -169,7 +169,7 @@ Enemy.prototype.getCanvasY = function() {
   return this.row * 83 - 12;
 };
 
-Enemy.prototype.speedArray = [650, 350, 200, 1000];
+Enemy.prototype.speedArray = [550, 450, 300, 750];
 
 Enemy.prototype.bugArray = [2, 3, 4, 6, 7];
 
