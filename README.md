@@ -1,20 +1,20 @@
 # Classic Arcade Game Clone
 ## About the game
-* In this game you have a Player, a Bug, Enemies and obstacles. The goal of the player is to reach the star square, while holding the bug.
-* Once the player picks up the bug and reaches the star square with last heart stand, the game moves to level 2 which finishes the game.
+In this game, you have a hero, a bug, enemies, and obstacles. The goal of the hero is to reach the star square while holding the bug.
+Once the star square is reached the game progresses to level 2 which is the last level of the game.
 ### Menu
-* Use left, right arrows on keyboard to navigate. Use enter button to start the game or display and live help.
-### Player
-* Should avoid colliding into any of the enemies.
-* The player can move left, right, up and down, unless there will be rocks on his way. Can't enter the water.
+* Use left, right arrows on the keyboard to navigate. Use enter button to start the game or display the help screen. To leave help screen press enter again.
+#### Hero
+* Should avoid colliding into the enemies.
+* Can move left, right, up and down with arrows unless there are rocks on his way. Can't enter the water.
 ### Enemies
-* The enemies move in varying speeds on the scene.
+* Move in varying speeds on the scene.
 ### Lives
-* Once the player collides with an enemy, the number of hearts will go down by one till last one disappear. The game will reset and the player moves back to the start square.
+* When the hero collides with an enemy, the number of hearts will go down by one till the last one disappear. The game will reset and the hero moves back to the starting position.
 ## How to run the game
 * Download the zip file from https://github.com/pressR2/ArcadeGame
 Extract all files and load index.html in your favorite browser.
 ## Source
 Initial code by Udacity [link](https://github.com/udacity/frontend-nanodegree-arcade-game).
 
-Icon keyboard moves made by [Freepik] from www.flaticon.com
+#Icon keyboard moves made by [Freepik] from www.flaticon.com.
