@@ -5,7 +5,7 @@ In this game, you have a hero, a bug, enemies, and obstacles. The goal of the he
 Once the star square is reached the game progresses to level 2 which is the last level of the game.
 ### Menu
 * Use left, right arrows on the keyboard to navigate. Use enter button to start the game or display the help screen. To leave help screen press enter again.
-#### Hero
+### Hero
 * Should avoid colliding into the enemies.
 * Can move left, right, up and down with arrows unless there are rocks on his way. Can't enter the water.
 ### Enemies
