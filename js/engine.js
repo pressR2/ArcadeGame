@@ -114,13 +114,13 @@ var Engine = (function(global) {
     ctx.shadowBlur = 0;
     ctx.fillStyle = '#c65353';
     ctx.fillRect(80, 420, 250, 40);
-    ctx.fillStyle = '#FF8345';
+    ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.font = 'bold 30px Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif';
     ctx.fillText('START', 205, 450);
     ctx.fillStyle = '#c65353';
     ctx.fillRect(360, 420, 250, 40);
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#ff8345';
     ctx.textAlign = 'center';
     ctx.font = 'bold 30px Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif';
     ctx.fillText('HELP', 490, 450);
@@ -130,13 +130,13 @@ var Engine = (function(global) {
     ctx.shadowBlur = 0;
     ctx.fillStyle = '#c65353';
     ctx.fillRect(80, 420, 250, 40);
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#ff8345';
     ctx.textAlign = 'center';
     ctx.font = 'bold 30px Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif';
     ctx.fillText('START', 205, 450);
     ctx.fillStyle = '#c65353';
     ctx.fillRect(360, 420, 250, 40);
-    ctx.fillStyle = '#FF8345';
+    ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.font = 'bold 30px Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif';
     ctx.fillText('HELP', 490, 450)
@@ -155,7 +155,7 @@ var Engine = (function(global) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.shadowColor = '#000';
     ctx.shadowBlur = 10;
-    ctx.fillStyle = '#D6D6C2';
+    ctx.fillStyle = '#d6d6c2';
     ctx.fillRect(12, 12, canvas.width - 24, canvas.height - 24);
   }
 
@@ -243,7 +243,7 @@ var Engine = (function(global) {
     ctx.shadowBlur = 0;
     ctx.fillStyle = '#c65353';
     ctx.fillRect((canvas.width - 250) / 2, 460, 250, 40);
-    ctx.fillStyle = '#FF8345';
+    ctx.fillStyle = '#fff';
     ctx.font = 'bold 30px Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif';
     ctx.fillText('BACK', canvas.width / 2, 490);
   }
