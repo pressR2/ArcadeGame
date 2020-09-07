@@ -12,11 +12,14 @@ Once the star square is reached the game progresses to level 2 which is the last
 * Move in varying speeds on the scene.
 ### Lives
 * When the hero collides with an enemy, the number of hearts will go down by one till the last one disappear. The game will reset and the hero moves back to the starting position.
-## How to run the game
+## How to run
 * Download the zip file from https://github.com/pressR2/ArcadeGame.
 * Extract all files and load `index.html` in your favorite browser.
 
 ## Source
 Initial code by [Udacity](https://github.com/udacity/frontend-nanodegree-arcade-game).
+## Link to game
+
+* [https://pressr2.github.io/ArcadeGame/](https://pressr2.github.io/ArcadeGame/)
 
 #Icon keyboard moves made by [Freepik] from www.flaticon.com.
