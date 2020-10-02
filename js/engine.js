@@ -149,7 +149,7 @@ var Engine = (function(global) {
   const title = function() {
     background();
     ctx.fillStyle = '#fff';
-    ctx.font = '150px Jazz LET, fantasy';
+    ctx.font = '142px Jazz LET, fantasy';
     ctx.fillText('Save the Bug', canvas.width / 2, 380);
     ctx.textAlign = 'center';
   }
