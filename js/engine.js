@@ -16,9 +16,9 @@
 
  'use strict';
  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-  // getElementById('body').style.display = 'none';
   alert("Sorry, this page doesn't work for mobile");
 }
+
 var Engine = (function(global) {
   /* Predefine the variables we'll be using within this scope,
    * create the canvas element, grab the 2D context for that canvas
@@ -149,7 +149,7 @@ var Engine = (function(global) {
   const title = function() {
     background();
     ctx.fillStyle = '#fff';
-    ctx.font = '165px Jazz LET, fantasy';
+    ctx.font = '150px Jazz LET, fantasy';
     ctx.fillText('Save the Bug', canvas.width / 2, 380);
     ctx.textAlign = 'center';
   }
