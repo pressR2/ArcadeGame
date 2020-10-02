@@ -15,6 +15,10 @@
  */
 
  'use strict';
+ if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+  // getElementById('body').style.display = 'none';
+  alert("Sorry, this page doesn't work for mobile");
+}
 var Engine = (function(global) {
   /* Predefine the variables we'll be using within this scope,
    * create the canvas element, grab the 2D context for that canvas
