@@ -14,8 +14,8 @@
  * writing app.js a little simpler to work with.
  */
 
- 'use strict';
- if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+'use strict';
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   alert("Sorry, this page doesn't work for mobile");
 }
 
@@ -163,6 +163,17 @@ var Engine = (function(global) {
     ctx.fillRect(12, 12, canvas.width - 24, canvas.height - 24);
   }
 
+  const navigation = function() {
+    ctx.fillStyle = '#000';
+    ctx.shadowBlur = 0;
+    ctx.font = 'bold 25px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('NAVIGATION', 275, 800);
+    ctx.drawImage(Resources.get('images/left-arrow-variant-key-on-keyboard.png'), 95, 830, 48, 48);
+    ctx.drawImage(Resources.get('images/keyboard-key-pointing-to-right.png'), 175, 830, 48, 48);
+    ctx.drawImage(Resources.get('images/keyboard-key-enter.png'), 255, 815, 64, 64);
+  }
+
   const lines = function() {
     ctx.moveTo(260, 140);
     ctx.lineTo(260, 760);
@@ -289,6 +300,7 @@ var Engine = (function(global) {
     // handle drawing with game states
     if (gameState === GS_TITLE) {
       title();
+      navigation();
 
       if (menu === 1) {
         startSelected();
@@ -360,7 +372,8 @@ var Engine = (function(global) {
     'images/arrow-down-key-on-keyboard.png',
     'images/keyboard-key-arrow-up.png',
     'images/keyboard-key-pointing-to-right.png',
-    'images/left-arrow-variant-key-on-keyboard.png'
+    'images/left-arrow-variant-key-on-keyboard.png',
+    'images/keyboard-key-enter.png'
   ]);
   Resources.onReady(init);
 
